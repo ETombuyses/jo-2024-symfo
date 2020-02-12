@@ -9,7 +9,11 @@ use Symfony\Component\Routing\Annotation\Route;
 class OlympicEventsController extends AbstractController
 {
     /**
-     * @Route("/olympic/events", name="olympic_events")
+     * @Route("/olympiceventsbydate", name="olympic_events")
      */
-
+    public function index(OlympicEventRepository $repository)
+    {
+        $response = $repository->getAll();
+        return $response;
+    }
 }

@@ -3,4 +3,12 @@
   <component name="JavaScriptSettings">
     <option name="languageLevel" value="ES6" />
   </component>
+  <component name="ProjectPlainTextFileTypeManager">
+    <file url="file://$PROJECT_DIR$/src/Repository/TODELETEArrondissementRepository.php" />
+    <file url="file://$PROJECT_DIR$/src/Repository/TODELETEOlympicEventRepositoryRepository.php" />
+    <file url="file://$PROJECT_DIR$/src/Repository/TODELETESportsFacilityRepository.php" />
+    <file url="file://$PROJECT_DIR$/src/Repository/TODELETESportsFacilityTypeRepository.php" />
+    <file url="file://$PROJECT_DIR$/src/Repository/TODELETESportsFamilyRepository.php" />
+    <file url="file://$PROJECT_DIR$/src/Repository/TODELETESportsPracticeRepository.php" />
+  </component>
 </project>

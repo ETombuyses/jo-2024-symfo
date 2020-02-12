@@ -2,12 +2,14 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * SportsFacility
  *
- * @ORM\Table(name="sports_facility", indexes={@ORM\Index(name="sports_facility_sports_facility_type0_FK", columns={"id_sports_facility_type"}), @ORM\Index(name="sports_facility_sports_practice_FK", columns={"id_sports_practice"}), @ORM\Index(name="sports_facility_arrondissement1_FK", columns={"id_arrondissement"})})
+ * @ORM\Table(name="sports_facility", indexes={@ORM\Index(name="sports_facility_arrondissement_FK", columns={"id_arrondissement"})})
  * @ORM\Entity(repositoryClass="App\Repository\SportsFacilityRepository")
  */
 class SportsFacility
@@ -22,60 +24,11 @@ class SportsFacility
     private $id;
 
     /**
-     * @var string|null
+     * @var string
      *
-     * @ORM\Column(name="practice_level", type="string", length=50, nullable=true)
+     * @ORM\Column(name="facility_type", type="text", length=65535, nullable=false)
      */
-    private $practiceLevel;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="handicap_access_mobility_sport_area", type="boolean", nullable=false)
-     */
-    private $handicapAccessMobilitySportArea;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="handicap_access_sensory_sport_area", type="boolean", nullable=false)
-     */
-    private $handicapAccessSensorySportArea;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="handicap_access_sensory_locker_room", type="boolean", nullable=false)
-     */
-    private $handicapAccessSensoryLockerRoom;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="handicap_access_mobility_locker_room", type="boolean", nullable=false)
-     */
-    private $handicapAccessMobilityLockerRoom;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="handicap_access_mobility_swimming_pool", type="boolean", nullable=false)
-     */
-    private $handicapAccessMobilitySwimmingPool;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="handicap_access_sensory_sanitary", type="boolean", nullable=false)
-     */
-    private $handicapAccessSensorySanitary;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="handicap_access_mobility_sanitary", type="boolean", nullable=false)
-     */
-    private $handicapAccessMobilitySanitary;
+    private $facilityType;
 
     /**
      * @var string|null
@@ -109,122 +62,33 @@ class SportsFacility
     private $idArrondissement;
 
     /**
-     * @var \SportsFacilityType
+     * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToOne(targetEntity="SportsFacilityType")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_sports_facility_type", referencedColumnName="id")
-     * })
-     */
-    private $idSportsFacilityType;
-
-    /**
-     * @var \SportsPractice
-     *
-     * @ORM\ManyToOne(targetEntity="SportsPractice")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_sports_practice", referencedColumnName="id")
-     * })
+     * @ORM\ManyToMany(targetEntity="SportsPractice", mappedBy="idSportsFacility")
      */
     private $idSportsPractice;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->idSportsPractice = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getPracticeLevel(): ?string
+    public function getFacilityType(): ?string
     {
-        return $this->practiceLevel;
+        return $this->facilityType;
     }
 
-    public function setPracticeLevel(?string $practiceLevel): self
+    public function setFacilityType(string $facilityType): self
     {
-        $this->practiceLevel = $practiceLevel;
-
-        return $this;
-    }
-
-    public function getHandicapAccessMobilitySportArea(): ?bool
-    {
-        return $this->handicapAccessMobilitySportArea;
-    }
-
-    public function setHandicapAccessMobilitySportArea(bool $handicapAccessMobilitySportArea): self
-    {
-        $this->handicapAccessMobilitySportArea = $handicapAccessMobilitySportArea;
-
-        return $this;
-    }
-
-    public function getHandicapAccessSensorySportArea(): ?bool
-    {
-        return $this->handicapAccessSensorySportArea;
-    }
-
-    public function setHandicapAccessSensorySportArea(bool $handicapAccessSensorySportArea): self
-    {
-        $this->handicapAccessSensorySportArea = $handicapAccessSensorySportArea;
-
-        return $this;
-    }
-
-    public function getHandicapAccessSensoryLockerRoom(): ?bool
-    {
-        return $this->handicapAccessSensoryLockerRoom;
-    }
-
-    public function setHandicapAccessSensoryLockerRoom(bool $handicapAccessSensoryLockerRoom): self
-    {
-        $this->handicapAccessSensoryLockerRoom = $handicapAccessSensoryLockerRoom;
-
-        return $this;
-    }
-
-    public function getHandicapAccessMobilityLockerRoom(): ?bool
-    {
-        return $this->handicapAccessMobilityLockerRoom;
-    }
-
-    public function setHandicapAccessMobilityLockerRoom(bool $handicapAccessMobilityLockerRoom): self
-    {
-        $this->handicapAccessMobilityLockerRoom = $handicapAccessMobilityLockerRoom;
-
-        return $this;
-    }
-
-    public function getHandicapAccessMobilitySwimmingPool(): ?bool
-    {
-        return $this->handicapAccessMobilitySwimmingPool;
-    }
-
-    public function setHandicapAccessMobilitySwimmingPool(bool $handicapAccessMobilitySwimmingPool): self
-    {
-        $this->handicapAccessMobilitySwimmingPool = $handicapAccessMobilitySwimmingPool;
-
-        return $this;
-    }
-
-    public function getHandicapAccessSensorySanitary(): ?bool
-    {
-        return $this->handicapAccessSensorySanitary;
-    }
-
-    public function setHandicapAccessSensorySanitary(bool $handicapAccessSensorySanitary): self
-    {
-        $this->handicapAccessSensorySanitary = $handicapAccessSensorySanitary;
-
-        return $this;
-    }
-
-    public function getHandicapAccessMobilitySanitary(): ?bool
-    {
-        return $this->handicapAccessMobilitySanitary;
-    }
-
-    public function setHandicapAccessMobilitySanitary(bool $handicapAccessMobilitySanitary): self
-    {
-        $this->handicapAccessMobilitySanitary = $handicapAccessMobilitySanitary;
+        $this->facilityType = $facilityType;
 
         return $this;
     }
@@ -277,29 +141,32 @@ class SportsFacility
         return $this;
     }
 
-    public function getIdSportsFacilityType(): ?SportsFacilityType
-    {
-        return $this->idSportsFacilityType;
-    }
-
-    public function setIdSportsFacilityType(?SportsFacilityType $idSportsFacilityType): self
-    {
-        $this->idSportsFacilityType = $idSportsFacilityType;
-
-        return $this;
-    }
-
-    public function getIdSportsPractice(): ?SportsPractice
+    /**
+     * @return Collection|SportsPractice[]
+     */
+    public function getIdSportsPractice(): Collection
     {
         return $this->idSportsPractice;
     }
 
-    public function setIdSportsPractice(?SportsPractice $idSportsPractice): self
+    public function addIdSportsPractice(SportsPractice $idSportsPractice): self
     {
-        $this->idSportsPractice = $idSportsPractice;
+        if (!$this->idSportsPractice->contains($idSportsPractice)) {
+            $this->idSportsPractice[] = $idSportsPractice;
+            $idSportsPractice->addIdSportsFacility($this);
+        }
 
         return $this;
     }
 
+    public function removeIdSportsPractice(SportsPractice $idSportsPractice): self
+    {
+        if ($this->idSportsPractice->contains($idSportsPractice)) {
+            $this->idSportsPractice->removeElement($idSportsPractice);
+            $idSportsPractice->removeIdSportsFacility($this);
+        }
+
+        return $this;
+    }
 
 }

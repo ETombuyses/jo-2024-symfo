@@ -40,6 +40,21 @@ class SportsPractice
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
+     * @ORM\ManyToMany(targetEntity="SportsFacility", inversedBy="idSportsPractice")
+     * @ORM\JoinTable(name="facility_practice_association",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="id_sports_practice", referencedColumnName="id")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="id_sports_facility", referencedColumnName="id")
+     *   }
+     * )
+     */
+    private $idSportsFacility;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
      * @ORM\ManyToMany(targetEntity="SportsFamily", inversedBy="idPractice")
      * @ORM\JoinTable(name="sports_family_practice_association",
      *   joinColumns={
@@ -57,6 +72,7 @@ class SportsPractice
      */
     public function __construct()
     {
+        $this->idSportsFacility = new \Doctrine\Common\Collections\ArrayCollection();
         $this->idSportsFamily = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -85,6 +101,32 @@ class SportsPractice
     public function setImageName(string $imageName): self
     {
         $this->imageName = $imageName;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|SportsFacility[]
+     */
+    public function getIdSportsFacility(): Collection
+    {
+        return $this->idSportsFacility;
+    }
+
+    public function addIdSportsFacility(SportsFacility $idSportsFacility): self
+    {
+        if (!$this->idSportsFacility->contains($idSportsFacility)) {
+            $this->idSportsFacility[] = $idSportsFacility;
+        }
+
+        return $this;
+    }
+
+    public function removeIdSportsFacility(SportsFacility $idSportsFacility): self
+    {
+        if ($this->idSportsFacility->contains($idSportsFacility)) {
+            $this->idSportsFacility->removeElement($idSportsFacility);
+        }
 
         return $this;
     }

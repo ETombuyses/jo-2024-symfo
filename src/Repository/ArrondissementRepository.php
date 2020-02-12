@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\Entity\Arrondissement;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * @method Arrondissement|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,28 +18,6 @@ class ArrondissementRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Arrondissement::class);
     }
-
-    public function getAll() {
-        $response = [];
-        $results = $this->findAll();
-
-        if ($results) {
-
-            foreach ($results as $result) {
-                array_push($response, [
-                    'id' => $result->getId(),
-                    'insee' => $result->getInseeCode(),
-                    'name' => $result->getName(),
-                    'surfaceKmSquare' => $result->getSurfaceKmSquare(),
-                    'parisArrondissementNumber' => $result->getParisArrondissementNumber()
-                ]);
-            }
-
-            return new JsonResponse($response);
-
-        } else return JsonResponse::fromJsonString('{"message" : "no data found"}');
-    }
-
 
     // /**
     //  * @return Arrondissement[] Returns an array of Arrondissement objects

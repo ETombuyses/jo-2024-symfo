@@ -20,28 +20,57 @@ class SportsPracticeRepository extends ServiceEntityRepository
         parent::__construct($registry, SportsPractice::class);
     }
 
-    public function getAll() {
-        $response = [];
-        $results = $this->findAll();
+    public function getLevelFilters() {
+        $conn = $this->getEntityManager()
+            ->getConnection();
 
-        if ($results) {
-            foreach ($results as $result) {
-                $sports_families_array = [];
-                $sports_families = $result->getIdSportsFamily();
-                foreach($sports_families as $sports_family) {
-                    array_push($sports_families_array, $sports_family->getId());
-                }
-                array_push($response, [
-                    'id' => $result->getId(),
-                    'practice' => $result->getPractice(),
-                    'imageName' => $result->getImageName(),
-                    'idsSportsFamilies' => $sports_families_array
-                ]);
-            }
+        $sql = "select DISTINCT practice_level FROM facility_practice_association WHERE practice_level is NOT NULL";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
 
-            return new JsonResponse($response);
+        $levels = [];
 
-        } else return JsonResponse::fromJsonString('{"message" : "no data found"}');
+        foreach ($stmt as $result) {
+            array_push($levels, $result['practice_level']);
+        }
+
+        $response = new JsonResponse($levels);
+        return $response;
+    }
+
+    public function getArrondissementCurrentEvents($id_arrondissement, $date) {
+
+        $conn = $this->getEntityManager()
+            ->getConnection();
+
+        $sql = "SELECT p.practice, p.image_name FROM sports_practice p
+                INNER JOIN olympic_event o ON p.id = o.id_sports_practice
+                WHERE o.date = :date AND o.id_arrondissement = :id_arrondissement";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindValue("date", $date);
+        $stmt->bindValue("id_arrondissement", $id_arrondissement);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+
+        $response = new JsonResponse($result);
+        return $response;
+    }
+
+    public function getAllOlympicsPractices($date) {
+        $conn = $this->getEntityManager()
+            ->getConnection();
+
+        $sql = "SELECT DISTINCT p.id, p.practice, p.image_name
+                FROM sports_practice p
+                INNER JOIN olympic_event o ON p.id = o.id_sports_practice
+                WHERE o.date = :date";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindValue("date", $date);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+
+        $response = new JsonResponse($result);
+        return $response;
     }
 
     // /**

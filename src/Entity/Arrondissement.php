@@ -42,13 +42,6 @@ class Arrondissement
      */
     private $surfaceKmSquare;
 
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="paris_arrondissement_number", type="integer", nullable=true)
-     */
-    private $parisArrondissementNumber;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -86,18 +79,6 @@ class Arrondissement
     public function setSurfaceKmSquare(?float $surfaceKmSquare): self
     {
         $this->surfaceKmSquare = $surfaceKmSquare;
-
-        return $this;
-    }
-
-    public function getParisArrondissementNumber(): ?int
-    {
-        return $this->parisArrondissementNumber;
-    }
-
-    public function setParisArrondissementNumber(?int $parisArrondissementNumber): self
-    {
-        $this->parisArrondissementNumber = $parisArrondissementNumber;
 
         return $this;
     }

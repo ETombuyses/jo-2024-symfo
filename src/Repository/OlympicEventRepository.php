@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  * @method OlympicEvent[]    findAll()
  * @method OlympicEvent[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class OlympicEventRepositoryRepository extends ServiceEntityRepository
+class OlympicEventRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -21,24 +21,54 @@ class OlympicEventRepositoryRepository extends ServiceEntityRepository
     }
 
     public function getAll() {
-        $response = [];
-        $results = $this->findAll();
+        $conn = $this->getEntityManager()
+            ->getConnection();
 
-        if ($results) {
-            foreach ($results as $result) {
-                array_push($response, [
-                    'id' => $result->getId(),
-                    'eventName' => $result->getEventName(),
-                    'eventPlace' => $result->getEventPlace(),
-                    'date' => $result->getDate(),
-                    'idArrondissement' => $result->getIdArrondissement()->getId(),
-                    'idSportsPractice' => $result->getIdSportsPractice()->getId(),
-                ]);
+        $sql = "SELECT DISTINCT s.id, s.practice, s.image_name, o.date
+                FROM sports_practice s
+                 INNER JOIN olympic_event o ON s.id = o.id_sports_practice";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+
+        $dates = [];
+        $events = [];
+
+        foreach ($stmt as $result) {
+            if (!in_array($result['date'], $dates)) {
+                array_push($dates, $result['date']);
             }
 
-            return new JsonResponse($response);
+            array_push($events, [
+                'id' => $result['id'],
+                'practice' => $result['practice'],
+                'image' => $result['image_name'],
+                'date' => $result['date']
+            ]);
+        }
 
-        } else return JsonResponse::fromJsonString('{"message" : "no data found"}');
+        $result = [];
+
+        foreach ($dates as $date) {
+            $practices = [];
+
+            foreach ($events as $event) {
+                if ($event['date'] === $date) {
+                    array_push($practices, [
+                        'id' => $event['id'],
+                        'practice' => $event['practice'],
+                        'image' => $event['image']
+                    ]);
+                }
+            }
+
+            array_push($result, [
+                'date' => $date,
+                'practices' => $practices
+            ]);
+        }
+
+        $response = new JsonResponse($result);
+        return $response;
     }
 
     // /**
