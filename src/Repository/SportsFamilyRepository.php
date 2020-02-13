@@ -19,6 +19,36 @@ class SportsFamilyRepository extends ServiceEntityRepository
         parent::__construct($registry, SportsFamily::class);
     }
 
+    public function getAllFamiliesOfAPractice($id_practice) {
+        $conn = $this->getEntityManager()
+            ->getConnection();
+
+        $sql = "SELECT f.id FROM sports_family f
+                INNER JOIN sports_family_practice_association a ON a.id_sports_family = f.id
+                INNER JOIN sports_practice p ON p.id = a.id_practice
+                WHERE p.id = :id";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindValue(":id", $id_practice);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+
+        $only_id_array = [];
+
+        foreach ($result as $id) {
+            if (sizeof($result) > 1) {
+                if ($id['id'] != 1 && $id['id'] != 5 && $id['id'] != 9) {
+                    array_push($only_id_array, (int)$id['id']);
+                }
+            } else {
+                array_push($only_id_array, (int)$id['id']);
+            }
+        }
+
+        return $only_id_array;
+    }
+
+
+
     // /**
     //  * @return SportsFamily[] Returns an array of SportsFamily objects
     //  */

@@ -8,19 +8,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-class SportListNoSportSelectedController extends AbstractController
+class SportListAllOlympicSportController extends AbstractController
 {
     /**
-     * @Route("/sport/list/no/sport/selected/{date}/{handicap_mobility}/{handicap_sensory}/{level}", name="sport_list_no_sport_selected")
+     * @Route("/sport/list/all/olympic/sport/{handicap_mobility}/{handicap_sensory}/{level}", name="sport_list_all_olympic_sport")
      * @param SportsPracticeRepository $practice_repository
      * @param SportsFacilityRepository $facility_repository
-     * @param $date
      * @param $handicap_mobility
      * @param $handicap_sensory
      * @param $level
      * @return JsonResponse
      */
-    public function index(SportsPracticeRepository $practice_repository, SportsFacilityRepository $facility_repository, $date, $handicap_mobility, $handicap_sensory, $level)
+    public function index(SportsPracticeRepository $practice_repository, SportsFacilityRepository $facility_repository, $handicap_mobility, $handicap_sensory, $level)
     {
         // for now, all parameters are required
         // ex:
@@ -28,8 +27,9 @@ class SportListNoSportSelectedController extends AbstractController
         // $handicap_mobility = boolean
         // $handicap_sensory = boolean
         // $level = string ('false' if no level selected)
-        // first get all the practices for every olympic event of the selected date
-        $practices = $practice_repository->getAllOlympicsPracticesByDate($date);
+
+        // first get all the practices for every olympic event
+        $practices = $practice_repository->getAllOlympicsPractices();
 
         $result = [];
 
@@ -43,7 +43,7 @@ class SportListNoSportSelectedController extends AbstractController
 
             array_push($result, [
                 'id_practice'=> $practice_id,
-                'practice' => $practice['practice'],
+                'practie' => $practice['practice'],
                 'image' => $practice['image_name'],
                 'facilitiesAmount' => $amount
             ]);

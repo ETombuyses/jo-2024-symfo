@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\SportsPractice;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
@@ -56,21 +57,74 @@ class SportsPracticeRepository extends ServiceEntityRepository
         return $response;
     }
 
-    public function getAllOlympicsPractices($date) {
+    public function getAllOlympicsPractices() {
         $conn = $this->getEntityManager()
             ->getConnection();
 
         $sql = "SELECT DISTINCT p.id, p.practice, p.image_name
                 FROM sports_practice p
-                INNER JOIN olympic_event o ON p.id = o.id_sports_practice
-                WHERE o.date = :date";
+                INNER JOIN olympic_event o ON p.id = o.id_sports_practice";
         $stmt = $conn->prepare($sql);
-        $stmt->bindValue("date", $date);
         $stmt->execute();
         $result = $stmt->fetchAll();
 
-        $response = new JsonResponse($result);
-        return $response;
+        return $result;
+    }
+
+    public function getAllOlympicsPracticesByDate($date) {
+            $conn = $this->getEntityManager()
+                ->getConnection();
+
+            $sql = "SELECT DISTINCT p.id, p.practice, p.image_name
+                FROM sports_practice p
+                INNER JOIN olympic_event o ON p.id = o.id_sports_practice
+                WHERE o.date = :date";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue("date", $date);
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+
+            return $result;
+    }
+
+    public function getOnePracticeData($id) {
+        $conn = $this->getEntityManager()
+            ->getConnection();
+
+        $sql = "SELECT practice, image_name
+                FROM sports_practice
+                WHERE id = :id";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindValue("id", $id);
+
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+
+        return $result;
+    }
+
+    public function getAllPracticesIdForFamilySports ($sports_families_id_array) {
+
+        $conn = $this->getEntityManager()
+            ->getConnection();
+
+
+        $stmt = $conn->executeQuery("SELECT DISTINCT p.id FROM sports_practice p
+                INNER JOIN sports_family_practice_association a ON p.id = a.id_practice
+                INNER JOIN sports_family f ON a.id_sports_family = f.id
+                WHERE f.id IN (?)",
+                array($sports_families_id_array),
+                array(Connection::PARAM_INT_ARRAY));
+        $result = $stmt->fetchAll();
+
+        $practices_ids = [];
+
+        foreach ($result as $id) {
+            array_push($practices_ids, (int)$id['id']);
+        }
+
+        return $practices_ids;
+
     }
 
     // /**
