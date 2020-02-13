@@ -21,7 +21,7 @@ class SportListSelectedPracticeController extends AbstractController
      * @param $handicap_mobility
      * @param $handicap_sensory
      * @param $level
-     * @return void
+     * @return JsonResponse
      */
     public function index(SportsFacilityRepository $facility_repository, SportsPracticeRepository $practice_repository, SportsFamilyRepository $family_repository, $id_practice, $handicap_mobility, $handicap_sensory, $level)
     {
