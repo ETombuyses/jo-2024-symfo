@@ -19,7 +19,7 @@ class SportListAllOlympicSportController extends AbstractController
      * @param $level
      * @return JsonResponse
      */
-    public function index(SportsPracticeRepository $practice_repository, SportsFacilityRepository $facility_repository, $handicap_mobility, $handicap_sensory, $level)
+    public function index(SportsPracticeRepository $practice_repository, SportsFacilityRepository $facility_repository, $handicap_mobility, $handicap_sensory, $level = '')
     {
         // for now, all parameters are required
         // ex:

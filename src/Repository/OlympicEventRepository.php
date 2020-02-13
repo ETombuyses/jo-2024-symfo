@@ -20,55 +20,19 @@ class OlympicEventRepository extends ServiceEntityRepository
         parent::__construct($registry, OlympicEvent::class);
     }
 
-    public function getAll() {
+    public function getAll($date) {
         $conn = $this->getEntityManager()
             ->getConnection();
 
-        $sql = "SELECT DISTINCT s.id, s.practice, s.image_name, o.date
+        $sql = "SELECT DISTINCT s.id, s.practice, s.image_name
                 FROM sports_practice s
-                 INNER JOIN olympic_event o ON s.id = o.id_sports_practice";
+                INNER JOIN olympic_event o ON s.id = o.id_sports_practice
+                WHERE o.date = :date";
         $stmt = $conn->prepare($sql);
+        $stmt->bindValue(":date", $date);
         $stmt->execute();
-
-        $dates = [];
-        $events = [];
-
-        foreach ($stmt as $result) {
-            if (!in_array($result['date'], $dates)) {
-                array_push($dates, $result['date']);
-            }
-
-            array_push($events, [
-                'id' => $result['id'],
-                'practice' => $result['practice'],
-                'image' => $result['image_name'],
-                'date' => $result['date']
-            ]);
-        }
-
-        $result = [];
-
-        foreach ($dates as $date) {
-            $practices = [];
-
-            foreach ($events as $event) {
-                if ($event['date'] === $date) {
-                    array_push($practices, [
-                        'id' => $event['id'],
-                        'practice' => $event['practice'],
-                        'image' => $event['image']
-                    ]);
-                }
-            }
-
-            array_push($result, [
-                'date' => $date,
-                'practices' => $practices
-            ]);
-        }
-
-        $response = new JsonResponse($result);
-        return $response;
+        $result = $stmt->fetchAll();
+        return $result;
     }
 
     // /**
