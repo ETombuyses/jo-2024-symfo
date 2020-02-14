@@ -19,6 +19,17 @@ class ArrondissementRepository extends ServiceEntityRepository
         parent::__construct($registry, Arrondissement::class);
     }
 
+    public function getSurfaceByArrondissement() {
+        $conn = $this->getEntityManager()
+            ->getConnection();
+
+        $sql = "SELECT id, surface_km_square FROM arrondissement";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+        return $result;
+    }
+
 
     // /**
     //  * @return Arrondissement[] Returns an array of Arrondissement objects

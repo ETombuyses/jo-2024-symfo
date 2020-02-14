@@ -8,10 +8,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
+
+// return modal sports informations if no sport selected but a date selected
+
 class SportListNoSportSelectedController extends AbstractController
 {
     /**
-     * @Route("/sport/list/no/sport/selected/{date}/{handicap_mobility}/{handicap_sensory}/{level}", name="sport_list_no_sport_selected")
+     * @Route("/sport/list/no/sport/selected/{date}/{handicap_mobility}/{handicap_sensory}/{level}/{arrondissement}", name="sport_list_no_sport_selected")
      * @param SportsPracticeRepository $practice_repository
      * @param SportsFacilityRepository $facility_repository
      * @param $date
@@ -20,7 +23,7 @@ class SportListNoSportSelectedController extends AbstractController
      * @param $level
      * @return JsonResponse
      */
-    public function index(SportsPracticeRepository $practice_repository, SportsFacilityRepository $facility_repository, $date, $handicap_mobility, $handicap_sensory, $level)
+    public function index(SportsPracticeRepository $practice_repository, SportsFacilityRepository $facility_repository, $date, $handicap_mobility, $handicap_sensory, $level, $arrondissement = -1)
     {
         // for now, all parameters are required
         // ex:
