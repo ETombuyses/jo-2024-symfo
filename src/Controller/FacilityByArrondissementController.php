@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class FacilityByArrondissementController extends AbstractController
 {
     /**
-     * @Route("/facility/concentration/by/arrondissement/{id_practice}", name="facility_concentration_by_arrondissement")
+     * @Route("/facility/by/arrondissement/{id_practice}", name="facility_concentration_by_arrondissement")
      * @param SportsFacilityRepository $facility_repository
      * @param $id_practice
      * @return JsonResponse
@@ -25,17 +25,35 @@ class FacilityByArrondissementController extends AbstractController
 
         $result = [];
 
-        if (!$amount_by_arrondissement) {
-            return new JsonResponse(false);
-        }
 
 
-        foreach ($amount_by_arrondissement as $arrondissement) {
-            array_push($result, [
-                'arrondissement' => (int)$arrondissement['id_arrondissement'],
-                'amountFacilities' => $arrondissement['amount_facilities']
-            ]);
+        for ($i = 1; $i < 21; $i++) {
+            $is_in_array = false;
+
+            foreach ($amount_by_arrondissement as $arrondissement) {
+                if ((int)$arrondissement['id_arrondissement'] === $i) {
+                    array_push($result, [
+                        'arrondissement' => (int)$arrondissement['id_arrondissement'],
+                        'amountFacilities' => (int)$arrondissement['amount_facilities']
+                    ]);
+                    $is_in_array = true;
+                }
+            }
+
+            if (!$is_in_array) {
+                array_push($result, [
+                'arrondissement' => $i,
+                'amountFacilities' => 0
+                ]);
+            }
         }
+
+//        foreach ($amount_by_arrondissement as $arrondissement) {
+//            array_push($result, [
+//                'arrondissement' => (int)$arrondissement['id_arrondissement'],
+//                'amountFacilities' => $arrondissement['amount_facilities']
+//            ]);
+//        }
 
 
         $response = new JsonResponse($result);

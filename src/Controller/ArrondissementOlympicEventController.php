@@ -21,7 +21,6 @@ class ArrondissementOlympicEventController extends AbstractController
     {
         $response = $repository->getArrondissementCurrentEvents($id_arrondissement, $date);
 
-
         return $response;
 
        // ex params to have a result:
