@@ -17,11 +17,22 @@ class OlympicEventsController extends AbstractController
      * @return JsonResponse
      */
 
+
     public function index(OlympicEventRepository $repository, $date)
     {
         $practices = $repository->getAll($date);
 
-        $response = new JsonResponse($practices);
+        $result = [];
+
+        foreach ($practices as $practice) {
+            array_push($result, [
+                'id' => (int)$practice['id'],
+                'practice' => $practice['practice'],
+                'image' => $practice['image_name']
+            ]);
+        }
+
+        $response = new JsonResponse($result);
         return $response;
     }
 }
