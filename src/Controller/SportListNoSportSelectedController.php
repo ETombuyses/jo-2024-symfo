@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\SportsFacilityRepository;
+use App\Repository\SportsFamilyRepository;
 use App\Repository\SportsPracticeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,34 +24,77 @@ class SportListNoSportSelectedController extends AbstractController
      * @param $level
      * @return JsonResponse
      */
-    public function index(SportsPracticeRepository $practice_repository, SportsFacilityRepository $facility_repository, $date, $handicap_mobility, $handicap_sensory, $level, $arrondissement = -1)
+    public function index(SportsPracticeRepository $practice_repository, SportsFacilityRepository $facility_repository, SportsFamilyRepository $family_repository, $date, $handicap_mobility, $handicap_sensory, $level, $arrondissement = -1)
     {
-        // for now, all parameters are required
-        // ex:
-        // $date = 2024-07-26
-        // $handicap_mobility = boolean
-        // $handicap_sensory = boolean
-        // $level = string ('false' if no level selected)
-        // first get all the practices for every olympic event of the selected date
+
         $practices = $practice_repository->getAllOlympicsPracticesByDate($date);
 
-        $result = [];
+        $olympic_practice_informations = [];
+        $families_practice_data = [];
 
         foreach ($practices as $practice) {
             $practice_id = (int)$practice['id'];
             $handicap_mobility_bool = $handicap_mobility === 'true' ? true : false;
             $handicap_sensory_bool = $handicap_sensory === 'true' ? true : false;
-            // TODO : find how to make a parameter optional (not make a second route because it is the same code, only the param changes
             $practice_level = $level === 'false' ? '' : $level;
-            $amount = $facility_repository->getAmountFacilities($practice_id, $handicap_mobility_bool, $handicap_sensory_bool, $practice_level);
+            $arrondissement = (int)$arrondissement;
 
-            array_push($result, [
+            $amount = $facility_repository->getAmountFacilities($practice_id, $handicap_mobility_bool, $handicap_sensory_bool, $practice_level, $arrondissement);
+            $amount = $amount ? (int)$amount["amount_facilities"] : 0;
+
+            array_push($olympic_practice_informations, [
                 'id_practice'=> $practice_id,
                 'practice' => $practice['practice'],
                 'image' => $practice['image_name'],
                 'facilitiesAmount' => $amount
             ]);
+
+            // ---------------------- get related sports data -----------------------------------
+
+            $sports_families_id = $family_repository->getAllFamiliesOfAPractice($practice_id);
+
+            $sports_families_practices_id = $practice_repository->getAllPracticesIdForFamilySports($sports_families_id);
+
+            foreach ($sports_families_practices_id as $id) {
+                $is_in_array = false;
+
+                foreach ($families_practice_data as $practice_to_check) {
+
+                    if ($practice_to_check['id'] === $id) {
+                        $is_in_array = true;
+                    }
+                }
+
+                if ($id !== $practice_id && !$is_in_array) {
+                    $amount = $facility_repository->getAmountFacilities($id, $handicap_mobility_bool, $handicap_sensory_bool, $practice_level, $arrondissement);
+                    $amount = $amount ? (int)$amount["amount_facilities"] : 0;
+
+                    $practice_data = $practice_repository->getOnePracticeData($id);
+
+                    $selected_practice_data_family = [
+                        'id' => $id,
+                        'practice' => $practice_data[0]['practice'],
+                        'image' => $practice_data[0]['image_name'],
+                        'facilityAmount' => $amount
+                    ];
+
+                    array_push($families_practice_data, $selected_practice_data_family);
+                }
+            }
         }
-        return new JsonResponse($result);
+
+           // TODO : supprimer les sports qui sont déjà dans les sports olympiques !!!!!
+//           foreach ($practices as $olympic_practice) {
+//               $excludes_current_olympic = array_map(function ($practice_data) {
+//                   return $practice_data['id'] !==
+//                }, $families_practice_data);
+//           }
+
+
+
+        $response = ['olympic_sports' => $olympic_practice_informations,
+            'related_sports' => $families_practice_data];
+
+        return new JsonResponse($response);
     }
 }

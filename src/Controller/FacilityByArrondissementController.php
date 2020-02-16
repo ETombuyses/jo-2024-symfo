@@ -22,9 +22,7 @@ class FacilityByArrondissementController extends AbstractController
     {
 
         $amount_by_arrondissement = $facility_repository->getAmountFacilitiesForEachArrondissement($id_practice);
-
         $result = [];
-
 
 
         for ($i = 1; $i < 21; $i++) {

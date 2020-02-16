@@ -42,12 +42,13 @@ class SportListAllOlympicSportController extends AbstractController
             $arrondissement = (int)$arrondissement;
 
             $amount = $facility_repository->getAmountFacilities($practice_id, $handicap_mobility_bool, $handicap_sensory_bool, $practice_level, $arrondissement);
+            $amount = $amount ? (int)$amount["amount_facilities"] : 0;
 
             array_push($result, [
                 'id'=> $practice_id,
                 'practice' => $practice['practice'],
                 'image' => $practice['image_name'],
-                'facilitiesAmount' => (int)$amount["amount_facilities"]
+                'facilitiesAmount' => $amount
             ]);
         }
         return new JsonResponse($result);
