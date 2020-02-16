@@ -28,7 +28,7 @@ class SportsFamilyRepository extends ServiceEntityRepository
                 INNER JOIN sports_practice p ON p.id = a.id_practice
                 WHERE p.id = :id";
         $stmt = $conn->prepare($sql);
-        $stmt->bindValue(":id", $id_practice);
+        $stmt->bindValue("id", $id_practice);
         $stmt->execute();
         $result = $stmt->fetchAll();
 

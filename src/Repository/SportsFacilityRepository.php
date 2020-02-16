@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\Entity\SportsFacility;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * @method SportsFacility|null find($id, $lockMode = null, $lockVersion = null)
@@ -24,16 +23,16 @@ class SportsFacilityRepository extends ServiceEntityRepository
         $conn = $this->getEntityManager()
             ->getConnection();
 
-
         // no filter
         if (!$handicap_mobility && !$handicap_sensory && $level === '' && $arrondissement === -1) {
+
             $sql = "SELECT COUNT(f.id) as amount_facilities FROM sports_facility f
                 INNER JOIN facility_practice_association a ON f.id = a.id_sports_facility
                 INNER JOIN sports_practice p ON p.id = a.id_sports_practice
                 WHERE p.id = :id";
 
             $stmt = $conn->prepare($sql);
-            $stmt->bindValue(":id", $id);
+            $stmt->bindValue("id", $id);
             $stmt->execute();
             $result = $stmt->fetch();
             return $result;
@@ -47,8 +46,8 @@ class SportsFacilityRepository extends ServiceEntityRepository
                 WHERE p.id = :id AND a.practice_level = :level";
 
             $stmt = $conn->prepare($sql);
-            $stmt->bindValue(":id", $id);
-            $stmt->bindValue(":level", $level);
+            $stmt->bindValue("id", $id);
+            $stmt->bindValue("level", $level);
             $stmt->execute();
             $result = $stmt->fetch();
             return $result;
@@ -62,7 +61,7 @@ class SportsFacilityRepository extends ServiceEntityRepository
                 WHERE p.id = :id AND (a.handicap_access_mobility_sport_area = 1 OR a.handicap_access_mobility_locker_room = 1 OR a.handicap_access_mobility_swimming_pool = 1 OR a.handicap_access_mobility_sanitary = 1)";
 
             $stmt = $conn->prepare($sql);
-            $stmt->bindValue(":id", $id);
+            $stmt->bindValue("id", $id);
             $stmt->execute();
             $result = $stmt->fetch();
             return $result;
@@ -76,7 +75,7 @@ class SportsFacilityRepository extends ServiceEntityRepository
                 WHERE p.id = :id AND (a.handicap_access_sensory_sport_area = 1 OR a.handicap_access_sensory_locker_room = 1 OR a.handicap_access_sensory_sanitary = 1)";
 
             $stmt = $conn->prepare($sql);
-            $stmt->bindValue(":id", $id);
+            $stmt->bindValue("id", $id);
             $stmt->execute();
             $result = $stmt->fetch();
             return $result;
@@ -90,8 +89,8 @@ class SportsFacilityRepository extends ServiceEntityRepository
                 WHERE p.id = :id AND a.practice_level = :level AND (a.handicap_access_mobility_sport_area = 1 OR a.handicap_access_mobility_locker_room = 1 OR a.handicap_access_mobility_swimming_pool = 1 OR a.handicap_access_mobility_sanitary = 1)";
 
             $stmt = $conn->prepare($sql);
-            $stmt->bindValue(":id", $id);
-            $stmt->bindValue(":level", $level);
+            $stmt->bindValue("id", $id);
+            $stmt->bindValue("level", $level);
             $stmt->execute();
             $result = $stmt->fetch();
             return $result;
@@ -105,8 +104,8 @@ class SportsFacilityRepository extends ServiceEntityRepository
                 WHERE p.id = :id AND a.practice_level = :level AND (a.handicap_access_sensory_sport_area = 1 OR a.handicap_access_sensory_locker_room = 1 OR a.handicap_access_sensory_sanitary = 1)";
 
             $stmt = $conn->prepare($sql);
-            $stmt->bindValue(":id", $id);
-            $stmt->bindValue(":level", $level);
+            $stmt->bindValue("id", $id);
+            $stmt->bindValue("level", $level);
             $stmt->execute();
             $result = $stmt->fetch();
             return $result;
@@ -120,8 +119,8 @@ class SportsFacilityRepository extends ServiceEntityRepository
                 WHERE p.id = :id AND a.practice_level = :level AND ((a.handicap_access_mobility_sport_area = 1 OR a.handicap_access_mobility_locker_room  = 1 OR a.handicap_access_mobility_swimming_pool = 1 OR a.handicap_access_mobility_sanitary = 1) AND (a.handicap_access_sensory_sport_area = 1 OR a.handicap_access_sensory_locker_room  = 1 OR a.handicap_access_sensory_sanitary = 1))";
 
             $stmt = $conn->prepare($sql);
-            $stmt->bindValue(":id", $id);
-            $stmt->bindValue(":level", $level);
+            $stmt->bindValue("id", $id);
+            $stmt->bindValue("level", $level);
             $stmt->execute();
             $result = $stmt->fetch();
             return $result;
@@ -135,7 +134,7 @@ class SportsFacilityRepository extends ServiceEntityRepository
                 WHERE p.id = :id AND ((a.handicap_access_mobility_sport_area = 1 OR a.handicap_access_mobility_locker_room = 1 OR a.handicap_access_mobility_swimming_pool = 1 OR a.handicap_access_mobility_sanitary = 1) AND (a.handicap_access_sensory_sport_area = 1 OR a.handicap_access_sensory_locker_room  = 1 OR a.handicap_access_sensory_sanitary = 1))";
 
             $stmt = $conn->prepare($sql);
-            $stmt->bindValue(":id", $id);
+            $stmt->bindValue("id", $id);
             $stmt->execute();
             $result = $stmt->fetch();
             return $result;
@@ -150,8 +149,8 @@ class SportsFacilityRepository extends ServiceEntityRepository
                 WHERE p.id = :id AND f.id_arrondissement = :arrondissement";
 
             $stmt = $conn->prepare($sql);
-            $stmt->bindValue(":id", $id);
-            $stmt->bindValue(":arrondissement", $arrondissement);
+            $stmt->bindValue("id", $id);
+            $stmt->bindValue("arrondissement", $arrondissement);
             $stmt->execute();
             $result = $stmt->fetch();
             return $result;
@@ -165,8 +164,8 @@ class SportsFacilityRepository extends ServiceEntityRepository
                 WHERE p.id = :id AND f.id_arrondissement = :arrondissement AND (a.handicap_access_mobility_sport_area = 1 OR a.handicap_access_mobility_locker_room = 1 OR a.handicap_access_mobility_swimming_pool = 1 OR a.handicap_access_mobility_sanitary = 1)";
 
             $stmt = $conn->prepare($sql);
-            $stmt->bindValue(":id", $id);
-            $stmt->bindValue(":arrondissement", $arrondissement);
+            $stmt->bindValue("id", $id);
+            $stmt->bindValue("arrondissement", $arrondissement);
             $stmt->execute();
             $result = $stmt->fetch();
             return $result;
@@ -180,8 +179,8 @@ class SportsFacilityRepository extends ServiceEntityRepository
                 WHERE p.id = :id AND f.id_arrondissement = :arrondissement AND (a.handicap_access_sensory_sport_area = 1 OR a.handicap_access_sensory_locker_room = 1 OR a.handicap_access_sensory_sanitary = 1)";
 
             $stmt = $conn->prepare($sql);
-            $stmt->bindValue(":id", $id);
-            $stmt->bindValue(":arrondissement", $arrondissement);
+            $stmt->bindValue("id", $id);
+            $stmt->bindValue("arrondissement", $arrondissement);
             $stmt->execute();
             $result = $stmt->fetch();
             return $result;
@@ -195,9 +194,9 @@ class SportsFacilityRepository extends ServiceEntityRepository
                 WHERE p.id = :id AND f.id_arrondissement = :arrondissement AND a.practice_level = :level";
 
             $stmt = $conn->prepare($sql);
-            $stmt->bindValue(":id", $id);
-            $stmt->bindValue(":arrondissement", $arrondissement);
-            $stmt->bindValue(":level", $level);
+            $stmt->bindValue("id", $id);
+            $stmt->bindValue("arrondissement", $arrondissement);
+            $stmt->bindValue("level", $level);
             $stmt->execute();
             $result = $stmt->fetch();
             return $result;
@@ -211,9 +210,9 @@ class SportsFacilityRepository extends ServiceEntityRepository
                 WHERE p.id = :id AND f.id_arrondissement = :arrondissement AND a.practice_level = :level AND (a.handicap_access_mobility_sport_area = 1 OR a.handicap_access_mobility_locker_room = 1 OR a.handicap_access_mobility_swimming_pool = 1 OR a.handicap_access_mobility_sanitary = 1)";
 
             $stmt = $conn->prepare($sql);
-            $stmt->bindValue(":id", $id);
-            $stmt->bindValue(":arrondissement", $arrondissement);
-            $stmt->bindValue(":level", $level);
+            $stmt->bindValue("id", $id);
+            $stmt->bindValue("arrondissement", $arrondissement);
+            $stmt->bindValue("level", $level);
             $stmt->execute();
             $result = $stmt->fetch();
             return $result;
@@ -227,8 +226,8 @@ class SportsFacilityRepository extends ServiceEntityRepository
                 WHERE p.id = :id AND f.id_arrondissement = :arrondissement AND ((a.handicap_access_mobility_sport_area = 1 OR a.handicap_access_mobility_locker_room = 1 OR a.handicap_access_mobility_swimming_pool = 1 OR a.handicap_access_mobility_sanitary = 1) AND (a.handicap_access_sensory_sport_area = 1 OR a.handicap_access_sensory_locker_room  = 1 OR a.handicap_access_sensory_sanitary = 1))";
 
             $stmt = $conn->prepare($sql);
-            $stmt->bindValue(":id", $id);
-            $stmt->bindValue(":arrondissement", $arrondissement);
+            $stmt->bindValue("id", $id);
+            $stmt->bindValue("arrondissement", $arrondissement);
             $stmt->execute();
             $result = $stmt->fetch();
             return $result;
@@ -242,9 +241,9 @@ class SportsFacilityRepository extends ServiceEntityRepository
                 WHERE p.id = :id AND f.id_arrondissement = :arrondissement AND a.practice_level = :level AND (a.handicap_access_sensory_sport_area = 1 OR a.handicap_access_sensory_locker_room = 1 OR a.handicap_access_sensory_sanitary = 1)";
 
             $stmt = $conn->prepare($sql);
-            $stmt->bindValue(":id", $id);
-            $stmt->bindValue(":arrondissement", $arrondissement);
-            $stmt->bindValue(":level", $level);
+            $stmt->bindValue("id", $id);
+            $stmt->bindValue("arrondissement", $arrondissement);
+            $stmt->bindValue("level", $level);
             $stmt->execute();
             $result = $stmt->fetch();
             return $result;
@@ -258,9 +257,9 @@ class SportsFacilityRepository extends ServiceEntityRepository
                 WHERE p.id = :id AND f.id_arrondissement = :arrondissement AND a.practice_level = :level AND ((a.handicap_access_mobility_sport_area = 1 OR a.handicap_access_mobility_locker_room = 1 OR a.handicap_access_mobility_swimming_pool = 1 OR a.handicap_access_mobility_sanitary = 1) AND (a.handicap_access_sensory_sport_area = 1 OR a.handicap_access_sensory_locker_room  = 1 OR a.handicap_access_sensory_sanitary = 1)) ";
 
             $stmt = $conn->prepare($sql);
-            $stmt->bindValue(":id", $id);
-            $stmt->bindValue(":arrondissement", $arrondissement);
-            $stmt->bindValue(":level", $level);
+            $stmt->bindValue("id", $id);
+            $stmt->bindValue("arrondissement", $arrondissement);
+            $stmt->bindValue("level", $level);
             $stmt->execute();
             $result = $stmt->fetch();
 
@@ -286,7 +285,7 @@ class SportsFacilityRepository extends ServiceEntityRepository
             GROUP BY f.id_arrondissement";
 
         $stmt = $conn->prepare($sql);
-        $stmt->bindValue(":id", $id);
+        $stmt->bindValue("id", $id);
         $stmt->execute();
         $result = $stmt->fetchAll();
         return $result;

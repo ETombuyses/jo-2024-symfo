@@ -25,14 +25,9 @@ class SportListAllOlympicSportController extends AbstractController
      * @param int $arrondissement
      * @return JsonResponse
      */
+
     public function index(SportsPracticeRepository $practice_repository, SportsFacilityRepository $facility_repository, $handicap_mobility, $handicap_sensory, $level, $arrondissement = -1)
     {
-        // for now, all parameters are required
-        // ex:
-        // $date = 2024-07-26
-        // $handicap_mobility = boolean
-        // $handicap_sensory = boolean
-        // $level = string ('false' if no level selected)
 
         // first get all the practices for every olympic event
         $practices = $practice_repository->getAllOlympicsPractices();
@@ -44,14 +39,15 @@ class SportListAllOlympicSportController extends AbstractController
             $handicap_mobility_bool = $handicap_mobility === 'true' ? true : false;
             $handicap_sensory_bool = $handicap_sensory === 'true' ? true : false;
             $practice_level = $level === 'false' ? '' : $level;
+            $arrondissement = (int)$arrondissement;
 
             $amount = $facility_repository->getAmountFacilities($practice_id, $handicap_mobility_bool, $handicap_sensory_bool, $practice_level, $arrondissement);
 
             array_push($result, [
-                'id_practice'=> $practice_id,
-                'practie' => $practice['practice'],
+                'id'=> $practice_id,
+                'practice' => $practice['practice'],
                 'image' => $practice['image_name'],
-                'facilitiesAmount' => $amount
+                'facilitiesAmount' => (int)$amount["amount_facilities"]
             ]);
         }
         return new JsonResponse($result);

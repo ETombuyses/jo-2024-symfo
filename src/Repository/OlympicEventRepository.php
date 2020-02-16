@@ -29,7 +29,7 @@ class OlympicEventRepository extends ServiceEntityRepository
                 INNER JOIN olympic_event o ON s.id = o.id_sports_practice
                 WHERE o.date = :date";
         $stmt = $conn->prepare($sql);
-        $stmt->bindValue(":date", $date);
+        $stmt->bindValue("date", $date);
         $stmt->execute();
         $result = $stmt->fetchAll();
         return $result;
