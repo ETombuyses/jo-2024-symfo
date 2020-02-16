@@ -20,6 +20,8 @@ class ArrondissementOlympicEventController extends AbstractController
     public function index(SportsPracticeRepository $repository, $id_arrondissement, $date)
     {
         $response = $repository->getArrondissementCurrentEvents($id_arrondissement, $date);
+
+
         return $response;
 
        // ex params to have a result:
