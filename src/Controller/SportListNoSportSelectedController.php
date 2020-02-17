@@ -59,8 +59,14 @@ class SportListNoSportSelectedController extends AbstractController
                 $is_in_array = false;
 
                 foreach ($families_practice_data as $practice_to_check) {
-
                     if ($practice_to_check['id'] === $id) {
+                        $is_in_array = true;
+                    }
+                }
+
+                // if the sport is already one of the JO
+                foreach ($practices as $olympic_practice) {
+                    if ((int)$olympic_practice['id'] === $id) {
                         $is_in_array = true;
                     }
                 }
@@ -83,17 +89,11 @@ class SportListNoSportSelectedController extends AbstractController
             }
         }
 
-           // TODO : supprimer les sports qui sont déjà dans les sports olympiques !!!!!
-//           foreach ($practices as $olympic_practice) {
-//               $excludes_current_olympic = array_map(function ($practice_data) {
-//                   return $practice_data['id'] !==
-//                }, $families_practice_data);
-//           }
 
 
 
-        $response = ['olympic_sports' => $olympic_practice_informations,
-            'related_sports' => $families_practice_data];
+        $response = ['olympicSports' => $olympic_practice_informations,
+            'relatedSports' => $families_practice_data];
 
         return new JsonResponse($response);
     }

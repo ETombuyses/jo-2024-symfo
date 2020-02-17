@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class SportListSelectedPracticeController extends AbstractController
 {
     /**
-     * @Route("/sport/list/selected/practice/{id_practice}/{handicap_mobility}/{handicap_sensory}/{level}", name="sport_list_selected_practice")
+     * @Route("/sport/list/selected/practice/{id_practice}/{handicap_mobility}/{handicap_sensory}/{level}/{arrondissement}", name="sport_list_selected_practice")
      * @param SportsFacilityRepository $facility_repository
      * @param SportsPracticeRepository $practice_repository
      * @param SportsFamilyRepository $family_repository
@@ -21,19 +21,21 @@ class SportListSelectedPracticeController extends AbstractController
      * @param $handicap_mobility
      * @param $handicap_sensory
      * @param $level
+     * @param $arrondissement
      * @return JsonResponse
      */
-    public function index(SportsFacilityRepository $facility_repository, SportsPracticeRepository $practice_repository, SportsFamilyRepository $family_repository, $id_practice, $handicap_mobility, $handicap_sensory, $level)
+    public function index(SportsFacilityRepository $facility_repository, SportsPracticeRepository $practice_repository, SportsFamilyRepository $family_repository, $id_practice, $handicap_mobility, $handicap_sensory, $level, $arrondissement = -1)
     {
         // ------------- step 1 : get all data from the selected practice
         $practice_id = (int)$id_practice;
         $handicap_mobility_bool = $handicap_mobility === 'true' ? true : false;
         $handicap_sensory_bool = $handicap_sensory === 'true' ? true : false;
-        // TODO : find how to make a parameter optional (not make a second route because it is the same code, only the param changes
         $practice_level = $level === 'false' ? '' : $level;
+        $arrondissement = (int)$arrondissement;
 
 
-        $amount = $facility_repository->getAmountFacilities($practice_id, $handicap_mobility_bool, $handicap_sensory_bool, $practice_level);
+        $amount = $facility_repository->getAmountFacilities($practice_id, $handicap_mobility_bool, $handicap_sensory_bool, $practice_level, $arrondissement);
+        $amount = $amount ? (int)$amount["amount_facilities"] : 0;
 
         $practice_data = $practice_repository->getOnePracticeData($practice_id);
 
@@ -41,9 +43,8 @@ class SportListSelectedPracticeController extends AbstractController
             'id' => $practice_id,
             'practice' => $practice_data[0]['practice'],
             'image' => $practice_data[0]['image_name'],
-            'facilityAmount' => $amount['amount_facilities']
+            'facilityAmount' => $amount
         ];
-
 
 
         // --------------- step 2 : get other practices from corresponding sports families.
@@ -56,7 +57,7 @@ class SportListSelectedPracticeController extends AbstractController
 
         foreach ($sports_families_practices_id as $id) {
             if ($id !== $practice_id) {
-                $amount = $facility_repository->getAmountFacilities($id, $handicap_mobility_bool, $handicap_sensory_bool, $practice_level);
+                $amount = $facility_repository->getAmountFacilities($id, $handicap_mobility_bool, $handicap_sensory_bool, $practice_level, $arrondissement);
 
                 $practice_data = $practice_repository->getOnePracticeData($id);
 
@@ -64,7 +65,7 @@ class SportListSelectedPracticeController extends AbstractController
                     'id' => $id,
                     'practice' => $practice_data[0]['practice'],
                     'image' => $practice_data[0]['image_name'],
-                    'facilityAmount' => $amount['amount_facilities']
+                    'facilityAmount' => (int)$amount['amount_facilities']
                 ];
 
                 array_push($families_practice_data, $selected_practice_data_family);
@@ -72,11 +73,6 @@ class SportListSelectedPracticeController extends AbstractController
         }
 
         $response = ['selectedSportData' => $selected_practice_data, 'otherFamilies' => $families_practice_data];
-
-
         return new JsonResponse($response);
-
-        // TODO: (normalement c'est ok) revoir la logique car c'est bizarre d'avoir de la course quand on choisi la natation (famille en commun = pentathlon)
-        // idee: exclure le triathlon et pentathlon de la liste ? seulement si autres familles dans la list
     }
 }
