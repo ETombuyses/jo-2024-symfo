@@ -292,6 +292,339 @@ class SportsFacilityRepository extends ServiceEntityRepository
     }
 
 
+
+
+    public function getAddresses($id, $handicap_mobility, $handicap_sensory, $level, $arrondissement) {
+        $conn = $this->getEntityManager()
+            ->getConnection();
+
+        // no filter
+        if (!$handicap_mobility && !$handicap_sensory && $level === '' && $arrondissement === -1) {
+
+            $sql = "SELECT f.facility_name, f.address_number, f.address_street, f.facility_type, ar.insee_code, 
+                a.handicap_access_mobility_sport_area, a.handicap_access_sensory_sport_area, a.handicap_access_sensory_locker_room,
+                a.handicap_access_mobility_locker_room, a.handicap_access_mobility_swimming_pool, a.handicap_access_sensory_sanitary,
+                a.handicap_access_mobility_sanitary 
+                FROM sports_facility f
+                INNER JOIN arrondissement ar ON f.id_arrondissement = ar.id
+                INNER JOIN facility_practice_association a ON a.id_sports_facility = f.id
+                INNER JOIN sports_practice p ON p.id = a.id_sports_practice
+                WHERE p.id = :id";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue("id", $id);
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+            return $result;
+        }
+
+        // if: level
+        if (!$handicap_mobility && !$handicap_sensory && $level !== '' && $arrondissement === -1) {
+            $sql = "SELECT f.facility_name, f.address_number, f.address_street, f.facility_type, ar.insee_code, 
+                a.handicap_access_mobility_sport_area, a.handicap_access_sensory_sport_area, a.handicap_access_sensory_locker_room,
+                a.handicap_access_mobility_locker_room, a.handicap_access_mobility_swimming_pool, a.handicap_access_sensory_sanitary,
+                a.handicap_access_mobility_sanitary 
+                FROM sports_facility f
+                INNER JOIN arrondissement ar ON f.id_arrondissement = ar.id
+                INNER JOIN facility_practice_association a ON a.id_sports_facility = f.id
+                INNER JOIN sports_practice p ON p.id = a.id_sports_practice
+                WHERE p.id = :id AND a.practice_level = :level";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue("id", $id);
+            $stmt->bindValue("level", $level);
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+            return $result;
+        }
+
+        // if: handicap mobility
+        if ($handicap_mobility && !$handicap_sensory && $level === '' && $arrondissement === -1) {
+            $sql = "SELECT f.facility_name, f.address_number, f.address_street, f.facility_type, ar.insee_code, 
+                a.handicap_access_mobility_sport_area, a.handicap_access_sensory_sport_area, a.handicap_access_sensory_locker_room,
+                a.handicap_access_mobility_locker_room, a.handicap_access_mobility_swimming_pool, a.handicap_access_sensory_sanitary,
+                a.handicap_access_mobility_sanitary 
+                FROM sports_facility f
+                INNER JOIN arrondissement ar ON f.id_arrondissement = ar.id
+                INNER JOIN facility_practice_association a ON a.id_sports_facility = f.id
+                INNER JOIN sports_practice p ON p.id = a.id_sports_practice
+                WHERE p.id = :id AND (a.handicap_access_mobility_sport_area = 1 OR a.handicap_access_mobility_locker_room = 1 OR a.handicap_access_mobility_swimming_pool = 1 OR a.handicap_access_mobility_sanitary = 1)";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue("id", $id);
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+            return $result;
+        }
+
+        // if: handicap sensory
+        if (!$handicap_mobility && $handicap_sensory && $level === '' && $arrondissement === -1) {
+            $sql = "SELECT f.facility_name, f.address_number, f.address_street, f.facility_type, ar.insee_code, 
+                a.handicap_access_mobility_sport_area, a.handicap_access_sensory_sport_area, a.handicap_access_sensory_locker_room,
+                a.handicap_access_mobility_locker_room, a.handicap_access_mobility_swimming_pool, a.handicap_access_sensory_sanitary,
+                a.handicap_access_mobility_sanitary 
+                FROM sports_facility f
+                INNER JOIN arrondissement ar ON f.id_arrondissement = ar.id
+                INNER JOIN facility_practice_association a ON a.id_sports_facility = f.id
+                INNER JOIN sports_practice p ON p.id = a.id_sports_practice
+                WHERE p.id = :id AND (a.handicap_access_sensory_sport_area = 1 OR a.handicap_access_sensory_locker_room = 1 OR a.handicap_access_sensory_sanitary = 1)";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue("id", $id);
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+            return $result;
+        }
+
+        // if: level + mobility
+        if ($handicap_mobility && !$handicap_sensory && $level !== '' && $arrondissement === -1) {
+            $sql = "SELECT f.facility_name, f.address_number, f.address_street, f.facility_type, ar.insee_code, 
+                a.handicap_access_mobility_sport_area, a.handicap_access_sensory_sport_area, a.handicap_access_sensory_locker_room,
+                a.handicap_access_mobility_locker_room, a.handicap_access_mobility_swimming_pool, a.handicap_access_sensory_sanitary,
+                a.handicap_access_mobility_sanitary 
+                FROM sports_facility f
+                INNER JOIN arrondissement ar ON f.id_arrondissement = ar.id
+                INNER JOIN facility_practice_association a ON a.id_sports_facility = f.id
+                INNER JOIN sports_practice p ON p.id = a.id_sports_practice
+                WHERE p.id = :id AND a.practice_level = :level AND (a.handicap_access_mobility_sport_area = 1 OR a.handicap_access_mobility_locker_room = 1 OR a.handicap_access_mobility_swimming_pool = 1 OR a.handicap_access_mobility_sanitary = 1)";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue("id", $id);
+            $stmt->bindValue("level", $level);
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+            return $result;
+        }
+
+        // if: level + sensory
+        if (!$handicap_mobility && $handicap_sensory && $level !== '' && $arrondissement === -1) {
+            $sql = "SELECT f.facility_name, f.address_number, f.address_street, f.facility_type, ar.insee_code, 
+                a.handicap_access_mobility_sport_area, a.handicap_access_sensory_sport_area, a.handicap_access_sensory_locker_room,
+                a.handicap_access_mobility_locker_room, a.handicap_access_mobility_swimming_pool, a.handicap_access_sensory_sanitary,
+                a.handicap_access_mobility_sanitary 
+                FROM sports_facility f
+                INNER JOIN arrondissement ar ON f.id_arrondissement = ar.id
+                INNER JOIN facility_practice_association a ON a.id_sports_facility = f.id
+                INNER JOIN sports_practice p ON p.id = a.id_sports_practice
+                WHERE p.id = :id AND a.practice_level = :level AND (a.handicap_access_sensory_sport_area = 1 OR a.handicap_access_sensory_locker_room = 1 OR a.handicap_access_sensory_sanitary = 1)";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue("id", $id);
+            $stmt->bindValue("level", $level);
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+            return $result;
+        }
+
+        // if: level + sensory + mobility
+        if ($handicap_mobility && $handicap_sensory && $level !== '' && $arrondissement === -1) {
+            $sql = "SELECT f.facility_name, f.address_number, f.address_street, f.facility_type, ar.insee_code, 
+                a.handicap_access_mobility_sport_area, a.handicap_access_sensory_sport_area, a.handicap_access_sensory_locker_room,
+                a.handicap_access_mobility_locker_room, a.handicap_access_mobility_swimming_pool, a.handicap_access_sensory_sanitary,
+                a.handicap_access_mobility_sanitary 
+                FROM sports_facility f
+                INNER JOIN arrondissement ar ON f.id_arrondissement = ar.id
+                INNER JOIN facility_practice_association a ON a.id_sports_facility = f.id
+                INNER JOIN sports_practice p ON p.id = a.id_sports_practice
+                WHERE p.id = :id AND a.practice_level = :level AND ((a.handicap_access_mobility_sport_area = 1 OR a.handicap_access_mobility_locker_room  = 1 OR a.handicap_access_mobility_swimming_pool = 1 OR a.handicap_access_mobility_sanitary = 1) AND (a.handicap_access_sensory_sport_area = 1 OR a.handicap_access_sensory_locker_room  = 1 OR a.handicap_access_sensory_sanitary = 1))";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue("id", $id);
+            $stmt->bindValue("level", $level);
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+            return $result;
+        }
+
+        // if: sensory + mobility
+        if ($handicap_mobility && $handicap_sensory && $level !== '' && $arrondissement === -1) {
+            $sql = "SELECT f.facility_name, f.address_number, f.address_street, f.facility_type, ar.insee_code, 
+                a.handicap_access_mobility_sport_area, a.handicap_access_sensory_sport_area, a.handicap_access_sensory_locker_room,
+                a.handicap_access_mobility_locker_room, a.handicap_access_mobility_swimming_pool, a.handicap_access_sensory_sanitary,
+                a.handicap_access_mobility_sanitary 
+                FROM sports_facility f
+                INNER JOIN arrondissement ar ON f.id_arrondissement = ar.id
+                INNER JOIN facility_practice_association a ON a.id_sports_facility = f.id
+                INNER JOIN sports_practice p ON p.id = a.id_sports_practice
+                WHERE p.id = :id AND ((a.handicap_access_mobility_sport_area = 1 OR a.handicap_access_mobility_locker_room = 1 OR a.handicap_access_mobility_swimming_pool = 1 OR a.handicap_access_mobility_sanitary = 1) AND (a.handicap_access_sensory_sport_area = 1 OR a.handicap_access_sensory_locker_room  = 1 OR a.handicap_access_sensory_sanitary = 1))";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue("id", $id);
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+            return $result;
+        }
+
+
+        // if: arrondissement
+        if (!$handicap_mobility && !$handicap_sensory && $level === '' && $arrondissement !== -1) {
+            $sql = "SELECT f.facility_name, f.address_number, f.address_street, f.facility_type, ar.insee_code, 
+                a.handicap_access_mobility_sport_area, a.handicap_access_sensory_sport_area, a.handicap_access_sensory_locker_room,
+                a.handicap_access_mobility_locker_room, a.handicap_access_mobility_swimming_pool, a.handicap_access_sensory_sanitary,
+                a.handicap_access_mobility_sanitary 
+                FROM sports_facility f
+                INNER JOIN arrondissement ar ON f.id_arrondissement = ar.id
+                INNER JOIN facility_practice_association a ON a.id_sports_facility = f.id
+                INNER JOIN sports_practice p ON p.id = a.id_sports_practice
+                WHERE p.id = :id AND f.id_arrondissement = :arrondissement";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue("id", $id);
+            $stmt->bindValue("arrondissement", $arrondissement);
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+            return $result;
+        }
+
+        // if: arrondissement + mobility
+        if ($handicap_mobility && !$handicap_sensory && $level === '' && $arrondissement !== -1) {
+            $sql = "SELECT f.facility_name, f.address_number, f.address_street, f.facility_type, ar.insee_code, 
+                a.handicap_access_mobility_sport_area, a.handicap_access_sensory_sport_area, a.handicap_access_sensory_locker_room,
+                a.handicap_access_mobility_locker_room, a.handicap_access_mobility_swimming_pool, a.handicap_access_sensory_sanitary,
+                a.handicap_access_mobility_sanitary 
+                FROM sports_facility f
+                INNER JOIN arrondissement ar ON f.id_arrondissement = ar.id
+                INNER JOIN facility_practice_association a ON a.id_sports_facility = f.id
+                INNER JOIN sports_practice p ON p.id = a.id_sports_practice
+                WHERE p.id = :id AND f.id_arrondissement = :arrondissement AND (a.handicap_access_mobility_sport_area = 1 OR a.handicap_access_mobility_locker_room = 1 OR a.handicap_access_mobility_swimming_pool = 1 OR a.handicap_access_mobility_sanitary = 1)";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue("id", $id);
+            $stmt->bindValue("arrondissement", $arrondissement);
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+            return $result;
+        }
+
+        // if: arrondissement + sensory
+        if (!$handicap_mobility && $handicap_sensory && $level === '' && $arrondissement !== -1) {
+            $sql = "SELECT f.facility_name, f.address_number, f.address_street, f.facility_type, ar.insee_code, 
+                a.handicap_access_mobility_sport_area, a.handicap_access_sensory_sport_area, a.handicap_access_sensory_locker_room,
+                a.handicap_access_mobility_locker_room, a.handicap_access_mobility_swimming_pool, a.handicap_access_sensory_sanitary,
+                a.handicap_access_mobility_sanitary 
+                FROM sports_facility f
+                INNER JOIN arrondissement ar ON f.id_arrondissement = ar.id
+                INNER JOIN facility_practice_association a ON a.id_sports_facility = f.id
+                INNER JOIN sports_practice p ON p.id = a.id_sports_practice
+                WHERE p.id = :id AND f.id_arrondissement = :arrondissement AND (a.handicap_access_sensory_sport_area = 1 OR a.handicap_access_sensory_locker_room = 1 OR a.handicap_access_sensory_sanitary = 1)";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue("id", $id);
+            $stmt->bindValue("arrondissement", $arrondissement);
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+            return $result;
+        }
+
+        // if: arrondissement + level
+        if (!$handicap_mobility && !$handicap_sensory && $level !== '' && $arrondissement !== -1) {
+            $sql = "SELECT f.facility_name, f.address_number, f.address_street, f.facility_type, ar.insee_code, 
+                a.handicap_access_mobility_sport_area, a.handicap_access_sensory_sport_area, a.handicap_access_sensory_locker_room,
+                a.handicap_access_mobility_locker_room, a.handicap_access_mobility_swimming_pool, a.handicap_access_sensory_sanitary,
+                a.handicap_access_mobility_sanitary 
+                FROM sports_facility f
+                INNER JOIN arrondissement ar ON f.id_arrondissement = ar.id
+                INNER JOIN facility_practice_association a ON a.id_sports_facility = f.id
+                INNER JOIN sports_practice p ON p.id = a.id_sports_practice
+                WHERE p.id = :id AND f.id_arrondissement = :arrondissement AND a.practice_level = :level";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue("id", $id);
+            $stmt->bindValue("arrondissement", $arrondissement);
+            $stmt->bindValue("level", $level);
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+            return $result;
+        }
+
+        // if: arrondissement + mobility + level
+        if ($handicap_mobility && !$handicap_sensory && $level !== '' && $arrondissement !== -1) {
+            $sql = "SELECT f.facility_name, f.address_number, f.address_street, f.facility_type, ar.insee_code, 
+                a.handicap_access_mobility_sport_area, a.handicap_access_sensory_sport_area, a.handicap_access_sensory_locker_room,
+                a.handicap_access_mobility_locker_room, a.handicap_access_mobility_swimming_pool, a.handicap_access_sensory_sanitary,
+                a.handicap_access_mobility_sanitary 
+                FROM sports_facility f
+                INNER JOIN arrondissement ar ON f.id_arrondissement = ar.id
+                INNER JOIN facility_practice_association a ON a.id_sports_facility = f.id
+                INNER JOIN sports_practice p ON p.id = a.id_sports_practice
+                WHERE p.id = :id AND f.id_arrondissement = :arrondissement AND a.practice_level = :level AND (a.handicap_access_mobility_sport_area = 1 OR a.handicap_access_mobility_locker_room = 1 OR a.handicap_access_mobility_swimming_pool = 1 OR a.handicap_access_mobility_sanitary = 1)";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue("id", $id);
+            $stmt->bindValue("arrondissement", $arrondissement);
+            $stmt->bindValue("level", $level);
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+            return $result;
+        }
+
+        // if: arrondissement + mobility + sensory
+        if ($handicap_mobility && $handicap_sensory && $level === '' && $arrondissement !== -1) {
+            $sql = "SELECT f.facility_name, f.address_number, f.address_street, f.facility_type, ar.insee_code, 
+                a.handicap_access_mobility_sport_area, a.handicap_access_sensory_sport_area, a.handicap_access_sensory_locker_room,
+                a.handicap_access_mobility_locker_room, a.handicap_access_mobility_swimming_pool, a.handicap_access_sensory_sanitary,
+                a.handicap_access_mobility_sanitary 
+                FROM sports_facility f
+                INNER JOIN arrondissement ar ON f.id_arrondissement = ar.id
+                INNER JOIN facility_practice_association a ON a.id_sports_facility = f.id
+                INNER JOIN sports_practice p ON p.id = a.id_sports_practice
+                WHERE p.id = :id AND f.id_arrondissement = :arrondissement AND ((a.handicap_access_mobility_sport_area = 1 OR a.handicap_access_mobility_locker_room = 1 OR a.handicap_access_mobility_swimming_pool = 1 OR a.handicap_access_mobility_sanitary = 1) AND (a.handicap_access_sensory_sport_area = 1 OR a.handicap_access_sensory_locker_room  = 1 OR a.handicap_access_sensory_sanitary = 1))";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue("id", $id);
+            $stmt->bindValue("arrondissement", $arrondissement);
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+            return $result;
+        }
+
+        // if: arrondissement + sensory + level
+        if (!$handicap_mobility && $handicap_sensory && $level !== '' && $arrondissement !== -1) {
+            $sql = "SELECT f.facility_name, f.address_number, f.address_street, f.facility_type, ar.insee_code, 
+                a.handicap_access_mobility_sport_area, a.handicap_access_sensory_sport_area, a.handicap_access_sensory_locker_room,
+                a.handicap_access_mobility_locker_room, a.handicap_access_mobility_swimming_pool, a.handicap_access_sensory_sanitary,
+                a.handicap_access_mobility_sanitary 
+                FROM sports_facility f
+                INNER JOIN arrondissement ar ON f.id_arrondissement = ar.id
+                INNER JOIN facility_practice_association a ON a.id_sports_facility = f.id
+                INNER JOIN sports_practice p ON p.id = a.id_sports_practice
+                WHERE p.id = :id AND f.id_arrondissement = :arrondissement AND a.practice_level = :level AND (a.handicap_access_sensory_sport_area = 1 OR a.handicap_access_sensory_locker_room = 1 OR a.handicap_access_sensory_sanitary = 1)";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue("id", $id);
+            $stmt->bindValue("arrondissement", $arrondissement);
+            $stmt->bindValue("level", $level);
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+            return $result;
+        }
+
+        // if: arrondissement + sensory + mobility + level
+        if ($handicap_mobility && $handicap_sensory && $level !== '' && $arrondissement !== -1) {
+            $sql = "SELECT f.facility_name, f.address_number, f.address_street, f.facility_type, ar.insee_code, 
+                a.handicap_access_mobility_sport_area, a.handicap_access_sensory_sport_area, a.handicap_access_sensory_locker_room,
+                a.handicap_access_mobility_locker_room, a.handicap_access_mobility_swimming_pool, a.handicap_access_sensory_sanitary,
+                a.handicap_access_mobility_sanitary 
+                FROM sports_facility f
+                INNER JOIN arrondissement ar ON f.id_arrondissement = ar.id
+                INNER JOIN facility_practice_association a ON a.id_sports_facility = f.id
+                INNER JOIN sports_practice p ON p.id = a.id_sports_practice
+                WHERE p.id = :id AND f.id_arrondissement = :arrondissement AND a.practice_level = :level AND ((a.handicap_access_mobility_sport_area = 1 OR a.handicap_access_mobility_locker_room = 1 OR a.handicap_access_mobility_swimming_pool = 1 OR a.handicap_access_mobility_sanitary = 1) AND (a.handicap_access_sensory_sport_area = 1 OR a.handicap_access_sensory_locker_room  = 1 OR a.handicap_access_sensory_sanitary = 1)) ";
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue("id", $id);
+            $stmt->bindValue("arrondissement", $arrondissement);
+            $stmt->bindValue("level", $level);
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+
+
+            return $result;
+        }
+
+    }
+
+
     // /**
     //  * @return SportsFacility[] Returns an array of SportsFacility objects
     //  */

@@ -15,7 +15,7 @@ class ArrondissementOlympicEventController extends AbstractController
      * @param SportsPracticeRepository $repository
      * @param $id_arrondissement
      * @param $date
-     * @return void
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function index(SportsPracticeRepository $repository, $id_arrondissement, $date)
     {
