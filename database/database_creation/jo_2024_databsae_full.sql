@@ -1,3 +1,8 @@
+
+DROP DATABASE IF EXISTS jo_2024;
+CREATE DATABASE jo_2024 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE jo_2024;
+
 -- MySQL dump 10.13  Distrib 5.7.28, for osx10.15 (x86_64)
 --
 -- Host: localhost    Database: jo_2024
@@ -18,9 +23,6 @@
 --
 -- Table structure for table `arrondissement`
 --
-DROP DATABASE IF EXISTS jo_2024;
-CREATE DATABASE jo_2024 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE jo_2024;
 
 DROP TABLE IF EXISTS `arrondissement`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -28,10 +30,9 @@ DROP TABLE IF EXISTS `arrondissement`;
 CREATE TABLE `arrondissement` (
   `id` int(11) NOT NULL,
   `insee_code` int(11) NOT NULL,
-  `name` varchar(50) NOT NULL,
-  `surface_km_square` float DEFAULT NULL,
+  `postal_code` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +41,7 @@ CREATE TABLE `arrondissement` (
 
 LOCK TABLES `arrondissement` WRITE;
 /*!40000 ALTER TABLE `arrondissement` DISABLE KEYS */;
-INSERT INTO `arrondissement` VALUES (1,75101,'Louvre',1.82),(2,75102,'Bourse',0.99),(3,75103,'Temple',1.17),(4,75104,'Hôtel-de-Ville',1.6),(5,75105,'Panthéon',2.54),(6,75106,'Luxembourg',2.15),(7,75107,'Palais-Bourbon',4.09),(8,75108,'Élysée',3.88),(9,75109,'Opéra',2.18),(10,75110,'Entrepôt',2.89),(11,75111,'Popincourt',3.67),(12,75112,'Reuilly',16.31),(13,75113,'Gobelins',7.15),(14,75114,'Observatoire',5.61),(15,75115,'Vaugirard',8.49),(16,75116,'Passy',16.37),(17,75117,'Batignolles-Monceau',5.67),(18,75118,'Buttes-Montmartre',6),(19,75119,'Buttes-Chaumont',6.79),(20,75120,'Ménilmontant',5.98);
+INSERT INTO `arrondissement` VALUES (1,75101,75001),(2,75102,75002),(3,75103,75003),(4,75104,75014),(5,75105,75005),(6,75106,75006),(7,75107,75007),(8,75108,75008),(9,75109,75009),(10,75110,75010),(11,75111,75011),(12,75112,75012),(13,75113,75013),(14,75114,75014),(15,75115,75015),(16,75116,75016),(17,75117,75017),(18,75118,75018),(19,75119,75019),(20,75120,75020);
 /*!40000 ALTER TABLE `arrondissement` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -54,7 +55,7 @@ DROP TABLE IF EXISTS `facility_practice_association`;
 CREATE TABLE `facility_practice_association` (
   `id_sports_practice` int(11) NOT NULL,
   `id_sports_facility` int(11) NOT NULL,
-  `practice_level` varchar(50) DEFAULT NULL,
+  `practice_level` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `handicap_access_mobility_sport_area` tinyint(1) NOT NULL,
   `handicap_access_sensory_sport_area` tinyint(1) NOT NULL,
   `handicap_access_sensory_locker_room` tinyint(1) NOT NULL,
@@ -66,7 +67,7 @@ CREATE TABLE `facility_practice_association` (
   KEY `facility_practice_association_sports_facility0_FK` (`id_sports_facility`),
   CONSTRAINT `facility_practice_association_sports_facility0_FK` FOREIGN KEY (`id_sports_facility`) REFERENCES `sports_facility` (`id`),
   CONSTRAINT `facility_practice_association_sports_practice_FK` FOREIGN KEY (`id_sports_practice`) REFERENCES `sports_practice` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -88,8 +89,8 @@ DROP TABLE IF EXISTS `olympic_event`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `olympic_event` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `event_name` varchar(50) NOT NULL,
-  `event_place` varchar(50) NOT NULL,
+  `event_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `event_place` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `date` date NOT NULL,
   `id_sports_practice` int(11) NOT NULL,
   `id_arrondissement` int(11) DEFAULT NULL,
@@ -98,7 +99,7 @@ CREATE TABLE `olympic_event` (
   KEY `olympic_event_arrondissement0_FK` (`id_arrondissement`),
   CONSTRAINT `olympic_event_arrondissement0_FK` FOREIGN KEY (`id_arrondissement`) REFERENCES `arrondissement` (`id`),
   CONSTRAINT `olympic_event_sports_practice_FK` FOREIGN KEY (`id_sports_practice`) REFERENCES `sports_practice` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=469 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=469 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -120,15 +121,15 @@ DROP TABLE IF EXISTS `sports_facility`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sports_facility` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `facility_type` text NOT NULL,
-  `facility_name` text,
+  `facility_type` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `facility_name` text COLLATE utf8mb4_unicode_ci,
   `address_number` int(11) NOT NULL,
-  `address_street` text NOT NULL,
+  `address_street` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `id_arrondissement` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `sports_facility_arrondissement_FK` (`id_arrondissement`),
   CONSTRAINT `sports_facility_arrondissement_FK` FOREIGN KEY (`id_arrondissement`) REFERENCES `arrondissement` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=362732 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=362732 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -150,9 +151,9 @@ DROP TABLE IF EXISTS `sports_family`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sports_family` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `sports_family_name` varchar(50) NOT NULL,
+  `sports_family_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -179,7 +180,7 @@ CREATE TABLE `sports_family_practice_association` (
   KEY `sports_family_practice_association_sports_family0_FK` (`id_sports_family`),
   CONSTRAINT `sports_family_practice_association_sports_family0_FK` FOREIGN KEY (`id_sports_family`) REFERENCES `sports_family` (`id`),
   CONSTRAINT `sports_family_practice_association_sports_practice_FK` FOREIGN KEY (`id_practice`) REFERENCES `sports_practice` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -201,10 +202,10 @@ DROP TABLE IF EXISTS `sports_practice`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sports_practice` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `practice` text NOT NULL,
-  `image_name` text NOT NULL,
+  `practice` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `image_name` text COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9408 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9408 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -226,4 +227,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-02-13  9:36:29
+-- Dump completed on 2020-02-27  9:13:04

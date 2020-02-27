@@ -94,7 +94,7 @@ class SportListOlympicSportsOfTheDayController extends AbstractController
         return $facilities_amount ? (int)$facilities_amount["amount_facilities"] : 0;
     }
 
-    private function addResult($array, $id, $practice_name, $practice_image, $facilities_amount) {
+    private function addResult($array, $id, $practice_name, $practice_image, $facilities_amount) :array {
         array_push($array, [
             'id' => $id,
             'practice' => $practice_name,
@@ -104,7 +104,7 @@ class SportListOlympicSportsOfTheDayController extends AbstractController
         return $array;
     }
 
-    private function isInArray ($array, $id) {
+    private function isInArray ($array, $id) :bool {
         foreach ($array as $element_to_check) {
             if ((int)$element_to_check['id'] === $id) {
                 return true;

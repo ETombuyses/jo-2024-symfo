@@ -19,7 +19,7 @@ class OlympicEventRepository extends ServiceEntityRepository
         parent::__construct($registry, OlympicEvent::class);
     }
 
-    public function getAllOlympicSportsOfTheDay(string $date) :array {
+    public function getAllOlympicSportsOfTheDay(string $date) {
         $qb = $this->createQueryBuilder('o');
         $qb->select('s.id, s.practice, s.imageName')
             ->innerJoin('o.idSportsPractice', 's','WITH', 's.id = o.idSportsPractice')
@@ -30,19 +30,5 @@ class OlympicEventRepository extends ServiceEntityRepository
         $query = $qb->getQuery();
         $result = $query->getResult();
         return $result;
-
-//////////// former code that works 100% ///////////////////////////////
-//        $conn = $this->getEntityManager()
-//            ->getConnection();
-//
-//        $sql = "SELECT DISTINCT s.id, s.practice, s.image_name
-//                FROM sports_practice s
-//                INNER JOIN olympic_event o ON s.id = o.id_sports_practice
-//                WHERE o.date = :date";
-//        $stmt = $conn->prepare($sql);
-//        $stmt->bindValue("date", $date);
-//        $stmt->execute();
-//        $result = $stmt->fetchAll();
-//        return $result;
     }
 }

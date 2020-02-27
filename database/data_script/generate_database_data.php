@@ -1,5 +1,5 @@
 <?php
-// script to fill the databse with data
+// script used to fill the database with data
 
 // connection to the DB
 $pdo  = new PDO(

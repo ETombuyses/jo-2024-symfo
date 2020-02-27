@@ -6,7 +6,6 @@ use App\Entity\SportsPractice;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\DBAL\Connection;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * @method SportsPractice|null find($id, $lockMode = null, $lockVersion = null)
@@ -21,7 +20,6 @@ class SportsPracticeRepository extends ServiceEntityRepository
         parent::__construct($registry, SportsPractice::class);
     }
 
-
     public function getLevelFilters() {
         $conn = $this->getEntityManager()
             ->getConnection();
@@ -33,8 +31,6 @@ class SportsPracticeRepository extends ServiceEntityRepository
 
         return $result;
     }
-
-
 
     public function getArrondissementCurrentEvents(int $arrondissement, string $date) {
 
@@ -72,9 +68,6 @@ class SportsPracticeRepository extends ServiceEntityRepository
     }
 
 
-
-
-
     public function getAllOlympicsPracticesByDate(string $date) {
             $conn = $this->getEntityManager()
                 ->getConnection();
@@ -90,8 +83,6 @@ class SportsPracticeRepository extends ServiceEntityRepository
 
             return $result;
     }
-
-
 
     public function getOnePracticeData(int $id) {
         $conn = $this->getEntityManager()
@@ -115,7 +106,6 @@ class SportsPracticeRepository extends ServiceEntityRepository
 
         $conn = $this->getEntityManager()
             ->getConnection();
-
 
         $stmt = $conn->executeQuery("SELECT DISTINCT p.id FROM sports_practice p
                 INNER JOIN sports_family_practice_association a ON p.id = a.id_practice
