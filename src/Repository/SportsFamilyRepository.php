@@ -29,19 +29,6 @@ class SportsFamilyRepository extends ServiceEntityRepository
         $query = $qb->getQuery();
         $result = $query->getResult();
 
-
-//        $conn = $this->getEntityManager()
-//            ->getConnection();
-//
-//        $sql = "SELECT f.id FROM sports_family f
-//                INNER JOIN sports_family_practice_association a ON a.id_sports_family = f.id
-//                INNER JOIN sports_practice p ON p.id = a.id_practice
-//                WHERE p.id = :id";
-//        $stmt = $conn->prepare($sql);
-//        $stmt->bindValue("id", $id_practice);
-//        $stmt->execute();
-//        $result = $stmt->fetchAll();
-
         $families_id = [];
 
         // exclude athletism, triathlon and pentathlon from the sports families if there is at least 1 sports family
