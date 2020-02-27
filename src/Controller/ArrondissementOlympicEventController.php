@@ -24,7 +24,6 @@ class ArrondissementOlympicEventController extends AbstractController
     public function index(SportsPracticeRepository $repository, $arrondissement, $date) :JsonResponse
     {
         $events = $repository->getArrondissementCurrentEvents((int)$arrondissement, $date);
-
         return new JsonResponse($events);
     }
 }

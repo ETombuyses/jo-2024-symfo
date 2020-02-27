@@ -32,17 +32,14 @@ class SportsFamilyRepository extends ServiceEntityRepository
         $stmt->execute();
         $result = $stmt->fetchAll();
 
-        $only_id_array = [];
+        $families_id = [];
 
         // exclude athletism, triathlon and pentathlon from the sports families if there is at least 1 sports family
         foreach ($result as $id) {
-            if (sizeof($result) > 1) {
-                if ($id['id'] != 1 && $id['id'] != 5 && $id['id'] != 9) {
-                    array_push($only_id_array, (int)$id['id']);
-                }
-            } else array_push($only_id_array, (int)$id['id']);
+            if (sizeof($result) < 2) array_push($families_id, (int)$id['id']);
+            else if ($id['id'] != 1 && $id['id'] != 5 && $id['id'] != 9) array_push($families_id, (int)$id['id']);
         }
 
-        return $only_id_array;
+        return $families_id;
     }
 }

@@ -42,60 +42,40 @@ class SportListOlympicSportsOfTheDayController extends AbstractController
 
         foreach ($practices as $practice) {
 
-            // 2: get the number of facilities + format the response for each practice ----------------------------
-
             $practice_id = (int)$practice['id'];
             $handicap_mobility_bool = $handicap_mobility === 'true' ? true : false;
             $handicap_sensory_bool = $handicap_sensory === 'true' ? true : false;
             $practice_level = $level === 'false' ? '' : $level;
             $arrondissement = (int)$arrondissement;
 
-            // get the amount of facilities where we can practice the sport practice
-            $facilities_amount = $facility_repository->getNumberFacilities($practice_id, $handicap_mobility_bool, $handicap_sensory_bool, $practice_level, $arrondissement);
-            $facilities_amount = $facilities_amount ? (int)$facilities_amount["amount_facilities"] : 0;
-
-            array_push($olympic_practices_information, [
-                'id'=> $practice_id,
-                'practice' => $practice['practice'],
-                'image' => $practice['image_name'],
-                'facilitiesAmount' => $facilities_amount
-            ]);
+            // 2: get the number of facilities + format the result for each practice ----------------------------
+            $facilities_amount = $this->getFacilitiesAmount($facility_repository, $practice_id, $handicap_mobility_bool, $handicap_sensory_bool, $practice_level, $arrondissement);
+            $olympic_practices_information = $this->addResult($olympic_practices_information, $practice_id, $practice['practice'], $practice['image_name'], $facilities_amount);
 
 
+            // 3: get the number of facilities + format the response for each related sports practices ----------------------
 
-            // 3: get the number of facilities + format the response for each related sports ----------------------
 
             $sports_families_id = $family_repository->getAllFamiliesOfAPractice($practice_id);
             $sports_families_practices_id = $practice_repository->getAllPracticesIdForFamilySports($sports_families_id);
 
             foreach ($sports_families_practices_id as $id) {
-                $is_in_array = false;
 
-                foreach ($families_practices_data as $practice_to_check) {
-                    if ($practice_to_check['id'] === $id) {
-                        $is_in_array = true;
-                    }
-                }
+                // exclude the sport if it already is in the result (due to his link with multiple sports families)
+                $is_in_array = $this->isInArray($families_practices_data, $id);
 
-                // if the sport is already one of the JO
-                foreach ($practices as $olympic_practice) {
-                    if ((int)$olympic_practice['id'] === $id) {
-                        $is_in_array = true;
-                    }
-                }
+
+                // exclude the sport if it already is in the Olympic Games of the selected day
+                $is_in_array = $is_in_array ? $is_in_array : $this->isInArray($practices, $id);
 
                 if ($id !== $practice_id && !$is_in_array) {
-                    $facilities_amount = $facility_repository->getNumberFacilities($id, $handicap_mobility_bool, $handicap_sensory_bool, $practice_level, $arrondissement);
-                    $facilities_amount = $facilities_amount ? (int)$facilities_amount["amount_facilities"] : 0;
+                    // get the amount of facilities where we can practice the sport practice
+                    $facilities_amount = $this->getFacilitiesAmount($facility_repository, $id, $handicap_mobility_bool, $handicap_sensory_bool, $practice_level, $arrondissement);
 
                     $practice_data = $practice_repository->getOnePracticeData($id);
 
-                    array_push($families_practices_data, [
-                        'id' => $id,
-                        'practice' => $practice_data[0]['practice'],
-                        'image' => $practice_data[0]['image_name'],
-                        'facilityAmount' => $facilities_amount
-                    ]);
+                    // format the result for each practice
+                    $families_practices_data = $this->addResult($families_practices_data, $id, $practice_data[0]['practice'], $practice_data[0]['image_name'], $facilities_amount);
                 }
             }
         }
@@ -104,5 +84,32 @@ class SportListOlympicSportsOfTheDayController extends AbstractController
             'relatedSports' => $families_practices_data];
 
         return new JsonResponse($response);
+    }
+
+
+
+
+    private function getFacilitiesAmount (SportsFacilityRepository $facility_repository, $id, $handicap_mobility, $handicap_sensory, $level, $arrondissement) {
+        $facilities_amount = $facility_repository->getNumberFacilities($id, $handicap_mobility, $handicap_sensory, $level, $arrondissement);
+        return $facilities_amount ? (int)$facilities_amount["amount_facilities"] : 0;
+    }
+
+    private function addResult($array, $id, $practice_name, $practice_image, $facilities_amount) {
+        array_push($array, [
+            'id' => $id,
+            'practice' => $practice_name,
+            'image' => $practice_image,
+            'facilityAmount' => $facilities_amount
+        ]);
+        return $array;
+    }
+
+    private function isInArray ($array, $id) {
+        foreach ($array as $element_to_check) {
+            if ((int)$element_to_check['id'] === $id) {
+                return true;
+            }
+        }
+        return false;
     }
 }
