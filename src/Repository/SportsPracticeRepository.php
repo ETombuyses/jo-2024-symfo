@@ -21,6 +21,7 @@ class SportsPracticeRepository extends ServiceEntityRepository
     }
 
     public function getLevelFilters() {
+
         $conn = $this->getEntityManager()
             ->getConnection();
 
@@ -30,6 +31,7 @@ class SportsPracticeRepository extends ServiceEntityRepository
         $result = $stmt->fetchAll();
 
         return $result;
+
     }
 
     public function getOnePracticeData(int $id) {

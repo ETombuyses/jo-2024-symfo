@@ -62,7 +62,7 @@ class SportsFacilityRepository extends ServiceEntityRepository
             $stmt = $conn->prepare($sql);
             $stmt->bindValue("level", $level);
 
-        } else if ($handicap_mobility && $handicap_sensory && $level !== '' && $arrondissement === -1) {
+        } else if ($handicap_mobility && $handicap_sensory && $level === '' && $arrondissement === -1) {
             // if: sensory + mobility
             $sql = $sql . "AND ((a.handicap_access_mobility_sport_area = 1 OR a.handicap_access_mobility_locker_room = 1 OR a.handicap_access_mobility_swimming_pool = 1 OR a.handicap_access_mobility_sanitary = 1) AND (a.handicap_access_sensory_sport_area = 1 OR a.handicap_access_sensory_locker_room  = 1 OR a.handicap_access_sensory_sanitary = 1))";
             $stmt = $conn->prepare($sql);

@@ -20,17 +20,27 @@ class SportsFamilyRepository extends ServiceEntityRepository
     }
 
     public function getAllFamiliesOfAPractice(int $id_practice) {
-        $conn = $this->getEntityManager()
-            ->getConnection();
 
-        $sql = "SELECT f.id FROM sports_family f
-                INNER JOIN sports_family_practice_association a ON a.id_sports_family = f.id
-                INNER JOIN sports_practice p ON p.id = a.id_practice
-                WHERE p.id = :id";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindValue("id", $id_practice);
-        $stmt->execute();
-        $result = $stmt->fetchAll();
+        $qb = $this->createQueryBuilder('f');
+        $qb->select('f.id')
+            ->where(':id_practice MEMBER OF f.idPractice')
+            ->setParameter('id_practice', $id_practice);
+
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+
+
+//        $conn = $this->getEntityManager()
+//            ->getConnection();
+//
+//        $sql = "SELECT f.id FROM sports_family f
+//                INNER JOIN sports_family_practice_association a ON a.id_sports_family = f.id
+//                INNER JOIN sports_practice p ON p.id = a.id_practice
+//                WHERE p.id = :id";
+//        $stmt = $conn->prepare($sql);
+//        $stmt->bindValue("id", $id_practice);
+//        $stmt->execute();
+//        $result = $stmt->fetchAll();
 
         $families_id = [];
 
