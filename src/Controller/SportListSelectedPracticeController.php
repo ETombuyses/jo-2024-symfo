@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\SportsPractice;
 use App\Repository\SportsFacilityRepository;
 use App\Repository\SportsFamilyRepository;
 use App\Repository\SportsPracticeRepository;
@@ -13,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class SportListSelectedPracticeController extends AbstractController
 {
     /**
-     * @Route("/sport/list/selected/practice/{id_practice}/{handicap_mobility}/{handicap_sensory}/{level}/{arrondissement}", name="sport_list_selected_practice")
+     * @Route("/selected-sport/{id_practice}/{handicap_mobility}/{handicap_sensory}/{level}/{arrondissement}", name="sport_list_selected_practice")
      * @param SportsFacilityRepository $facility_repository
      * @param SportsPracticeRepository $practice_repository
      * @param SportsFamilyRepository $family_repository
@@ -24,7 +23,7 @@ class SportListSelectedPracticeController extends AbstractController
      * @param $arrondissement
      * @return JsonResponse
      */
-    public function index(SportsFacilityRepository $facility_repository, SportsPracticeRepository $practice_repository, SportsFamilyRepository $family_repository, $id_practice, $handicap_mobility, $handicap_sensory, $level, $arrondissement = -1)
+    public function index(SportsFacilityRepository $facility_repository, SportsPracticeRepository $practice_repository, SportsFamilyRepository $family_repository, $id_practice, $handicap_mobility, $handicap_sensory, $level, $arrondissement = -1) :JsonResponse
     {
         // ------------- step 1 : get all data from the selected practice
         $practice_id = (int)$id_practice;
@@ -34,7 +33,7 @@ class SportListSelectedPracticeController extends AbstractController
         $arrondissement = (int)$arrondissement;
 
 
-        $amount = $facility_repository->getAmountFacilities($practice_id, $handicap_mobility_bool, $handicap_sensory_bool, $practice_level, $arrondissement);
+        $amount = $facility_repository->getNumberFacilities($practice_id, $handicap_mobility_bool, $handicap_sensory_bool, $practice_level, $arrondissement);
         $amount = $amount ? (int)$amount["amount_facilities"] : 0;
 
         $practice_data = $practice_repository->getOnePracticeData($practice_id);
@@ -57,7 +56,7 @@ class SportListSelectedPracticeController extends AbstractController
 
         foreach ($sports_families_practices_id as $id) {
             if ($id !== $practice_id) {
-                $amount = $facility_repository->getAmountFacilities($id, $handicap_mobility_bool, $handicap_sensory_bool, $practice_level, $arrondissement);
+                $amount = $facility_repository->getNumberFacilities($id, $handicap_mobility_bool, $handicap_sensory_bool, $practice_level, $arrondissement);
 
                 $practice_data = $practice_repository->getOnePracticeData($id);
 

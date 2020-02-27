@@ -19,7 +19,7 @@ class SportsFamilyRepository extends ServiceEntityRepository
         parent::__construct($registry, SportsFamily::class);
     }
 
-    public function getAllFamiliesOfAPractice($id_practice) {
+    public function getAllFamiliesOfAPractice(int $id_practice) {
         $conn = $this->getEntityManager()
             ->getConnection();
 
@@ -34,47 +34,15 @@ class SportsFamilyRepository extends ServiceEntityRepository
 
         $only_id_array = [];
 
+        // exclude athletism, triathlon and pentathlon from the sports families if there is at least 1 sports family
         foreach ($result as $id) {
             if (sizeof($result) > 1) {
                 if ($id['id'] != 1 && $id['id'] != 5 && $id['id'] != 9) {
                     array_push($only_id_array, (int)$id['id']);
                 }
-            } else {
-                array_push($only_id_array, (int)$id['id']);
-            }
+            } else array_push($only_id_array, (int)$id['id']);
         }
 
         return $only_id_array;
     }
-
-
-
-    // /**
-    //  * @return SportsFamily[] Returns an array of SportsFamily objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?SportsFamily
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

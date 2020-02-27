@@ -4,27 +4,27 @@ namespace App\Controller;
 
 use App\Repository\SportsPracticeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-// return the current arrondissement olympic events taking place into this same arrondissement
 
 class ArrondissementOlympicEventController extends AbstractController
 {
+
+    // return the current olympic events taking place in a specific arrondissement
+
     /**
-     * @Route("/arrondissementolympic/{id_arrondissement}/{date}", name="arrondissement_olympic_event")
+     * @Route("/arrondissement-olympic-event/{arrondissement}/{date}", name="arrondissement_olympic_event")
      * @param SportsPracticeRepository $repository
-     * @param $id_arrondissement
+     * @param $arrondissement
      * @param $date
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
-    public function index(SportsPracticeRepository $repository, $id_arrondissement, $date)
+
+    public function index(SportsPracticeRepository $repository, $arrondissement, $date) :JsonResponse
     {
-        $response = $repository->getArrondissementCurrentEvents($id_arrondissement, $date);
+        $events = $repository->getArrondissementCurrentEvents((int)$arrondissement, $date);
 
-        return $response;
-
-       // ex params to have a result:
-        // arrondissement: 7
-        // date: 2024-07-27
+        return new JsonResponse($events);
     }
 }

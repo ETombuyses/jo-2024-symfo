@@ -31,7 +31,7 @@ class SportsFamily
     private $sportsFamilyName;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var Collection
      *
      * @ORM\ManyToMany(targetEntity="SportsPractice", mappedBy="idSportsFamily")
      */

@@ -62,7 +62,7 @@ class SportsFacility
     private $idArrondissement;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var Collection
      *
      * @ORM\ManyToMany(targetEntity="SportsPractice", mappedBy="idSportsFacility")
      */

@@ -38,7 +38,7 @@ class SportsPractice
     private $imageName;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var Collection
      *
      * @ORM\ManyToMany(targetEntity="SportsFacility", inversedBy="idSportsPractice")
      * @ORM\JoinTable(name="facility_practice_association",
@@ -53,7 +53,7 @@ class SportsPractice
     private $idSportsFacility;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var Collection
      *
      * @ORM\ManyToMany(targetEntity="SportsFamily", inversedBy="idPractice")
      * @ORM\JoinTable(name="sports_family_practice_association",
