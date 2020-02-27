@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\OlympicEventRepository;
 use App\Repository\SportsFacilityRepository;
 use App\Repository\SportsPracticeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,20 +21,20 @@ class SportListAllOlympicSportsController extends AbstractController
 
     /**
      * @Route("/all-olympic-sports/{handicap_mobility}/{handicap_sensory}/{level}/{arrondissement}", name="all_olympic_sports")
-     * @param SportsPracticeRepository $practice_repository
+     * @param OlympicEventRepository $olympic_repository
      * @param SportsFacilityRepository $facility_repository
      * @param $handicap_mobility
      * @param $handicap_sensory
      * @param $level
-     * @param $arrondissement
+     * @param int $arrondissement
      * @return JsonResponse
      */
 
-    public function index(SportsPracticeRepository $practice_repository, SportsFacilityRepository $facility_repository, $handicap_mobility, $handicap_sensory, $level, $arrondissement = -1) :JsonResponse
+    public function index(OlympicEventRepository $olympic_repository, SportsFacilityRepository $facility_repository, $handicap_mobility, $handicap_sensory, $level, $arrondissement = -1) :JsonResponse
     {
 
         // 1 : get the list of all sports practices performed during the Olympic Games
-        $practices = $practice_repository->getAllOlympicsPractices();
+        $practices = $olympic_repository->getAllOlympicsPractices();
 
         $result = [];
 
@@ -52,7 +53,7 @@ class SportListAllOlympicSportsController extends AbstractController
             array_push($result, [
                 'id'=> $practice_id,
                 'practice' => $practice['practice'],
-                'image' => $practice['image_name'],
+                'image' => $practice['imageName'],
                 'facilitiesAmount' => $facilities_amount
             ]);
         }

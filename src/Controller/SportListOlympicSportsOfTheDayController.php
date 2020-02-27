@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\OlympicEventRepository;
 use App\Repository\SportsFacilityRepository;
 use App\Repository\SportsFamilyRepository;
 use App\Repository\SportsPracticeRepository;
@@ -21,6 +22,7 @@ class SportListOlympicSportsOfTheDayController extends AbstractController
 
     /**
      * @Route("/olympic-sports-of-the-day/{date}/{handicap_mobility}/{handicap_sensory}/{level}/{arrondissement}", name="olympic_sports_of_the_day")
+     * @param OlympicEventRepository $olympics_repository
      * @param SportsPracticeRepository $practice_repository
      * @param SportsFacilityRepository $facility_repository
      * @param SportsFamilyRepository $family_repository
@@ -28,14 +30,14 @@ class SportListOlympicSportsOfTheDayController extends AbstractController
      * @param $handicap_mobility
      * @param $handicap_sensory
      * @param $level
-     * @param $arrondissement
+     * @param int $arrondissement
      * @return JsonResponse
      */
 
-    public function index(SportsPracticeRepository $practice_repository, SportsFacilityRepository $facility_repository, SportsFamilyRepository $family_repository, $date, $handicap_mobility, $handicap_sensory, $level, $arrondissement = -1) :JsonResponse
+    public function index(OlympicEventRepository $olympics_repository, SportsPracticeRepository $practice_repository, SportsFacilityRepository $facility_repository, SportsFamilyRepository $family_repository, $date, $handicap_mobility, $handicap_sensory, $level, $arrondissement = -1) :JsonResponse
     {
         // 1 : get the list of all sports practices performed during the Olympic Games on $date
-        $practices = $practice_repository->getAllOlympicsPracticesByDate($date);
+        $practices = $olympics_repository->getAllOlympicsPracticesByDate($date);
 
         $olympic_practices_information = [];
         $families_practices_data = [];
@@ -50,7 +52,7 @@ class SportListOlympicSportsOfTheDayController extends AbstractController
 
             // 2: get the number of facilities + format the result for each practice ----------------------------
             $facilities_amount = $this->getFacilitiesAmount($facility_repository, $practice_id, $handicap_mobility_bool, $handicap_sensory_bool, $practice_level, $arrondissement);
-            $olympic_practices_information = $this->addResult($olympic_practices_information, $practice_id, $practice['practice'], $practice['image_name'], $facilities_amount);
+            $olympic_practices_information = $this->addResult($olympic_practices_information, $practice_id, $practice['practice'], $practice['imageName'], $facilities_amount);
 
 
             // 3: get the number of facilities + format the response for each related sports practices ----------------------
@@ -75,7 +77,7 @@ class SportListOlympicSportsOfTheDayController extends AbstractController
                     $practice_data = $practice_repository->getOnePracticeData($id);
 
                     // format the result for each practice
-                    $families_practices_data = $this->addResult($families_practices_data, $id, $practice_data[0]['practice'], $practice_data[0]['image_name'], $facilities_amount);
+                    $families_practices_data = $this->addResult($families_practices_data, $id, $practice_data[0]['practice'], $practice_data[0]['imageName'], $facilities_amount);
                 }
             }
         }

@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Repository\SportsPracticeRepository;
+use App\Repository\OlympicEventRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,13 +15,13 @@ class ArrondissementOlympicEventController extends AbstractController
 
     /**
      * @Route("/arrondissement-olympic-event/{arrondissement}/{date}", name="arrondissement_olympic_event")
-     * @param SportsPracticeRepository $repository
+     * @param OlympicEventRepository $repository
      * @param $arrondissement
      * @param $date
      * @return JsonResponse
      */
 
-    public function index(SportsPracticeRepository $repository, $arrondissement, $date) :JsonResponse
+    public function index(OlympicEventRepository $repository, $arrondissement, $date) :JsonResponse
     {
         $events = $repository->getArrondissementCurrentEvents((int)$arrondissement, $date);
         return new JsonResponse($events);

@@ -32,71 +32,14 @@ class SportsPracticeRepository extends ServiceEntityRepository
         return $result;
     }
 
-    public function getArrondissementCurrentEvents(int $arrondissement, string $date) {
-
-        $conn = $this->getEntityManager()
-            ->getConnection();
-
-        // get the sport practice name and image of an olympic sport occuring in a given arrondissement on a given date
-        $sql = "SELECT p.practice, p.image_name FROM sports_practice p
-                INNER JOIN olympic_event o ON p.id = o.id_sports_practice
-                WHERE o.date = :date AND o.id_arrondissement = :id_arrondissement";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindValue("date", $date);
-        $stmt->bindValue("id_arrondissement", $arrondissement);
-        $stmt->execute();
-        $result = $stmt->fetchAll();
-
-        return $result;
-    }
-
-
-
-
-    public function getAllOlympicsPractices() {
-        $conn = $this->getEntityManager()
-            ->getConnection();
-
-        $sql = "SELECT DISTINCT p.id, p.practice, p.image_name
-                FROM sports_practice p
-                INNER JOIN olympic_event o ON p.id = o.id_sports_practice";
-        $stmt = $conn->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->fetchAll();
-
-        return $result;
-    }
-
-
-    public function getAllOlympicsPracticesByDate(string $date) {
-            $conn = $this->getEntityManager()
-                ->getConnection();
-
-            $sql = "SELECT DISTINCT p.id, p.practice, p.image_name
-                FROM sports_practice p
-                INNER JOIN olympic_event o ON p.id = o.id_sports_practice
-                WHERE o.date = :date";
-            $stmt = $conn->prepare($sql);
-            $stmt->bindValue("date", $date);
-            $stmt->execute();
-            $result = $stmt->fetchAll();
-
-            return $result;
-    }
-
     public function getOnePracticeData(int $id) {
-        $conn = $this->getEntityManager()
-            ->getConnection();
+        $qb = $this->createQueryBuilder('p');
+        $qb->select('p.practice, p.imageName')
+            ->where('p.id = :id')
+            ->setParameter('id', $id);
 
-        $sql = "SELECT practice, image_name
-                FROM sports_practice
-                WHERE id = :id";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindValue("id", $id);
-
-        $stmt->execute();
-        $result = $stmt->fetchAll();
-
+        $query = $qb->getQuery();
+        $result = $query->getResult();
         return $result;
     }
 

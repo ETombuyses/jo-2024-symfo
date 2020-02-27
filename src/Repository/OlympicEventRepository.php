@@ -21,8 +21,8 @@ class OlympicEventRepository extends ServiceEntityRepository
 
     public function getAllOlympicSportsOfTheDay(string $date) {
         $qb = $this->createQueryBuilder('o');
-        $qb->select('s.id, s.practice, s.imageName')
-            ->innerJoin('o.idSportsPractice', 's','WITH', 's.id = o.idSportsPractice')
+        $qb->select('p.id, p.practice, p.imageName')
+            ->innerJoin('o.idSportsPractice', 'p','WITH', 'p.id = o.idSportsPractice')
             ->where('o.date = :date')
             ->setParameter('date', $date)
             ->distinct();
@@ -31,4 +31,47 @@ class OlympicEventRepository extends ServiceEntityRepository
         $result = $query->getResult();
         return $result;
     }
+
+    public function getArrondissementCurrentEvents(int $arrondissement, string $date) {
+
+        // get the sport practice name and image of an olympic sport occuring in a given arrondissement on a given date
+        $qb = $this->createQueryBuilder('o');
+        $qb->select('p.practice, p.imageName')
+            ->innerJoin('o.idSportsPractice', 'p','WITH', 'p.id = o.idSportsPractice')
+            ->where('o.date = :date')
+            ->andWhere('o.idArrondissement = :id_arrondissement')
+            ->setParameter('date', $date)
+            ->setParameter('id_arrondissement', $arrondissement);
+
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+        return $result;
+    }
+
+
+    public function getAllOlympicsPractices() {
+        $qb = $this->createQueryBuilder('o');
+        $qb->select('p.id, p.practice, p.imageName')
+            ->innerJoin('o.idSportsPractice', 'p','WITH', 'p.id = o.idSportsPractice')
+            ->distinct();
+
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+        return $result;
+    }
+
+
+    public function getAllOlympicsPracticesByDate(string $date) {
+        $qb = $this->createQueryBuilder('o');
+        $qb->select('p.id, p.practice, p.imageName')
+            ->innerJoin('o.idSportsPractice', 'p','WITH', 'p.id = o.idSportsPractice')
+            ->where('o.date = :date')
+            ->setParameter('date', $date)
+            ->distinct();
+
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+        return $result;
+    }
+
 }

@@ -11,6 +11,13 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SportListSelectedPracticeController extends AbstractController
 {
+
+    // Route used to display the modal information
+    // return the selected olympic sport's information + its related sports information (number of facilities + practice info) depending of the following filters :
+    // handicaps
+    // arrondissement
+    // level
+
     /**
      * @Route("/selected-sport/{id_practice}/{handicap_mobility}/{handicap_sensory}/{level}/{arrondissement}", name="sport_list_selected_practice")
      * @param SportsFacilityRepository $facility_repository
@@ -38,7 +45,7 @@ class SportListSelectedPracticeController extends AbstractController
         $amount = $facility_repository->getNumberFacilities($practice_id, $handicap_mobility_bool, $handicap_sensory_bool, $practice_level, $arrondissement);
         $amount = $amount ? (int)$amount["amount_facilities"] : 0;
         $practice_data = $practice_repository->getOnePracticeData($practice_id);
-        $selected_practice_data = $this->addResult([], $practice_id, $practice_data[0]['practice'], $practice_data[0]['image_name'], $amount);
+        $selected_practice_data = $this->addResult([], $practice_id, $practice_data[0]['practice'], $practice_data[0]['imageName'], $amount);
 
 
 
@@ -54,7 +61,7 @@ class SportListSelectedPracticeController extends AbstractController
             if ($id !== $practice_id) {
                 $amount = $facility_repository->getNumberFacilities($id, $handicap_mobility_bool, $handicap_sensory_bool, $practice_level, $arrondissement);
                 $practice_data = $practice_repository->getOnePracticeData($id);
-                $families_practice_data = $this->addResult($families_practice_data, $id, $practice_data[0]['practice'], $practice_data[0]['image_name'], (int)$amount['amount_facilities']);
+                $families_practice_data = $this->addResult($families_practice_data, $id, $practice_data[0]['practice'], $practice_data[0]['imageName'], (int)$amount['amount_facilities']);
             }
         }
 
