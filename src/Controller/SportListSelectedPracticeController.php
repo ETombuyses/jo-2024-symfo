@@ -45,9 +45,12 @@ class SportListSelectedPracticeController extends AbstractController
         $amount = $facility_repository->getNumberFacilities($practice_id, $handicap_mobility_bool, $handicap_sensory_bool, $practice_level, $arrondissement);
         $amount = $amount ? (int)$amount["amount_facilities"] : 0;
         $practice_data = $practice_repository->getOnePracticeData($practice_id);
-        $selected_practice_data = $this->addResult([], $practice_id, $practice_data[0]['practice'], $practice_data[0]['imageName'], $amount);
-
-
+        $selected_practice_data = [
+            'id' => $practice_id,
+            'practice' => $practice_data[0]['practice'],
+            'image' => $practice_data[0]['imageName'],
+            'facilityAmount' => $amount
+        ];
 
         // --------------- step 2 : get other practices from corresponding sports families.
 

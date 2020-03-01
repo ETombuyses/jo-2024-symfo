@@ -36,7 +36,7 @@ class OlympicEventRepository extends ServiceEntityRepository
 
         // get the sport practice name and image of an olympic sport occuring in a given arrondissement on a given date
         $qb = $this->createQueryBuilder('o');
-        $qb->select('p.practice, p.imageName')
+        $qb->select('p.practice, p.imageName, o.eventPlace')
             ->innerJoin('o.idSportsPractice', 'p','WITH', 'p.id = o.idSportsPractice')
             ->where('o.date = :date')
             ->andWhere('o.idArrondissement = :id_arrondissement')
