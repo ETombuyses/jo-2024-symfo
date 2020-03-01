@@ -2,7 +2,7 @@
 
 Back-end expertise : Emilie Tombuyses
 
-## USed technologies
+## Used technologies
 
 Symfony 4
 
@@ -10,5 +10,12 @@ Symfony 4
 
 https://jo2024g7.docs.apiary.io/#
 
-## argumentation file 
+## Back-end expertise
+
+You can find my expertise report in this repository (dossier-expertise-back-end.pdf)
+Have a nice reading !
+
+## To know more about the database creation :
+Check the database folder. It includes the original JSON files and the PHP script used to insert the data into the database.
+
 
